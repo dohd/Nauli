@@ -2,10 +2,7 @@ import React from "react";
 import { View, StyleSheet } from 'react-native';
 import { 
     AppBar, 
-    Button, 
     Text,
-    Stack, 
-    Pressable, 
     Icon,
     IconButton,
     IconComponentProvider
