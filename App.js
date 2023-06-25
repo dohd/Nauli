@@ -2,11 +2,12 @@ import React from "react";
 import { NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
 import ResetPasswordScreen from "./screens/ResetPasswordScreen";
+import HomeScreen from "./screens/HomeScreen";
+import HistoryScreen from "./screens/History";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,10 +38,12 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{ 
-            headerLeft: () => null, 
-            title: 'Welcome' 
-          }}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="History"
+          component={HistoryScreen}
+          options={{ headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
