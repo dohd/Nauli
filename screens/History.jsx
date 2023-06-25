@@ -28,8 +28,8 @@ export default function HistoryScreen({navigation, route}) {
           )}
         />
         {
-          [...Array(10)].map(v => (
-            <View style={styles.mainCardView}>
+          [...Array(10)].map((v, i) => (
+            <View style={styles.mainCardView} key={i}>
               <View style={{flexDirection: 'row', alignItems: 'center' }}>
                 <View style={styles.subCardView}>
                   <Icon name="cash-multiple" size={30} />
