@@ -72,17 +72,18 @@ export default function HomeScreen({navigation, route}) {
               <Text variant='subtitle2' style={{ margin: 20, fontWeight: 'bold' }}>Today</Text>
 
               {
-                [...Array(5)].map((v, i) => (
+                ['Fuxi Isak', 'Lola Azra', 'Sujata Devyn', 'Ida Roman', 'Sherry Argider']
+                .map((v, i) => (
                   <View key={i}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginLeft: 10, marginRight: 10 }} key={0}>
+                    <View style={styles.listItemView} key={0}>
                       <View style={{flexDirection: 'row', alignItems: 'center' }}>
                         <View style={styles.subCardView}>
                           <Icon name="cash-multiple" size={30} />
                         </View>
                         <View style={{marginLeft: 8}}>
-                            <Text variant='subtitle2'>Dwayne Carter</Text>
+                            <Text variant='subtitle2'>{v}</Text>
                             <View style={{ marginTop: 4, borderWidth: 0 }}>
-                              <Text variant='subtitle2' color="gray">0700100200</Text>
+                              <Text variant='subtitle2' color="gray">{Math.random().toString().slice(2,12)}</Text>
                             </View>
                         </View>
                       </View>
@@ -90,7 +91,7 @@ export default function HomeScreen({navigation, route}) {
                         <View style={{marginLeft: 8}}>
                             <Text variant='subtitle2'>100</Text>
                             <View style={{ marginTop: 4, borderWidth: 0 }}>
-                              <Text variant='subtitle2' color="gray">07:00 AM</Text>
+                              <Text variant='subtitle2' color="gray">07:0{i+1} AM</Text>
                             </View>
                         </View>
                       </View>
@@ -104,7 +105,7 @@ export default function HomeScreen({navigation, route}) {
                 title="See more"
                 variant="outline"
                 color="primary"
-                style={{ marginTop: 5, marginLeft: 80, marginRight: 80 }}
+                style={{ marginTop: 5, marginLeft: 'auto', marginRight: 'auto', width: '50%' }}
                 onPress={() => navigation.navigate('History')}
               />
             </Backdrop>          
@@ -135,7 +136,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingLeft: 16,
     paddingRight: 14,
-    marginTop: 4,
     marginBottom: 6,
     marginLeft: 10,
     marginRight: 10,
@@ -144,4 +144,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  listItemView: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginLeft: 10, 
+    marginRight: 10 
+  }
 });

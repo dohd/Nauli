@@ -24,32 +24,34 @@ export default function HistoryScreen({navigation, route}) {
             />
           )}
         />
-        {
-          [...Array(10)].map((v, i) => (
-            <View style={styles.mainCardView} key={i}>
-              <View style={{flexDirection: 'row', alignItems: 'center' }}>
-                <View style={styles.subCardView}>
-                  <Icon name="cash-multiple" size={30} />
+        <View style={{ marginTop: 10 }}>
+          {
+            ['Fuxi Isak', 'Lola Azra', 'Sujata Devyn', 'Ida Roman', 'Sherry Argider','Fuxi Isak', 'Lola Azra', 'Sujata Devyn', 'Ida Roman', 'Sherry Argider']
+            .map((v, i) => (
+              <View style={styles.mainCardView} key={i}>
+                <View style={{flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={styles.subCardView}>
+                    <Icon name="cash-multiple" size={30} />
+                  </View>
+                  <View style={{marginLeft: 8}}>
+                      <Text variant='subtitle2'>{v}</Text>
+                      <View style={{ marginTop: 4, borderWidth: 0 }}>
+                        <Text variant='subtitle2' color="gray">{Math.random().toString().slice(2,12)}</Text>
+                      </View>
+                  </View>
                 </View>
-                <View style={{marginLeft: 8}}>
-                    <Text variant='subtitle2'>Dwayne Carter</Text>
-                    <View style={{ marginTop: 4, borderWidth: 0 }}>
-                      <Text variant='subtitle2' color="gray">0700100200</Text>
-                    </View>
+                <View style={{flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{marginLeft: 8}}>
+                      <Text variant='subtitle2'>100</Text>
+                      <View style={{ marginTop: 4, borderWidth: 0 }}>
+                        <Text variant='subtitle2' color="gray">07:0{i+1} AM</Text>
+                      </View>
+                  </View>
                 </View>
               </View>
-              <View style={{flexDirection: 'row', alignItems: 'center' }}>
-                <View style={{marginLeft: 8}}>
-                    <Text variant='subtitle2'>100</Text>
-                    <View style={{ marginTop: 4, borderWidth: 0 }}>
-                      <Text variant='subtitle2' color="gray">07:00 AM</Text>
-                    </View>
-                </View>
-              </View>
-            </View>
-          ))
-        }
-
+            ))
+          }
+        </View>
       </View>
     </IconComponentProvider>
   );

@@ -46,7 +46,7 @@ export default function LoginScreen({navigation}) {
               }
             </Formik>
             <Text 
-              style={{ alignSelf: 'flex-start', marginTop: 15, fontSize: 10, color: '#651fff' }}
+              style={{ alignSelf: 'flex-start', marginTop: 15, fontSize: 12, color: '#651fff' }}
               onPress={() => { 
                 navigation.navigate('ForgotPassword'); 
               }}
