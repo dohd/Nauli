@@ -63,8 +63,17 @@ export default function HomeScreen({navigation, route}) {
               revealed={false}
               header={
                 <AppBar
-                  title="Deposits"
+                  title="Deposit"
                   transparent
+                  trailing={props => (
+                    <IconButton
+                      icon={props => <Icon name="bank-transfer" size={40} color="white" />}
+                      {...props}
+                      onPress={() => {
+                        navigation.navigate('Withdraw');
+                      }}
+                    />
+                  )}
                 />
               }
               backLayer={<View style={{ height: 290}} />}
@@ -103,8 +112,8 @@ export default function HomeScreen({navigation, route}) {
 
               <Button
                 title="See more"
+                uppercase={false}
                 variant="outline"
-                color="primary"
                 style={{ marginTop: 5, marginLeft: 'auto', marginRight: 'auto', width: '50%' }}
                 onPress={() => navigation.navigate('History')}
               />
