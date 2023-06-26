@@ -83,7 +83,7 @@ export default function HomeScreen({navigation, route}) {
                         <View style={{marginLeft: 8}}>
                             <Text variant='subtitle2'>{v}</Text>
                             <View style={{ marginTop: 4, borderWidth: 0 }}>
-                              <Text variant='subtitle2' color="gray">{Math.random().toString().slice(2,12)}</Text>
+                              <Text variant='subtitle2' color="gray">07{Math.random().toString().slice(2,10)}</Text>
                             </View>
                         </View>
                       </View>
