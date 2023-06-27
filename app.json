@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Nauli",
-    "slug": "Nauli",
+    "slug": "nauli",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.alloice.nauli"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.alloice.nauli"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8f38c191-ca76-4f8c-806f-5baf4c3ecf86"
+      }
+    },
+    "owner": "alloice"
   }
 }
