@@ -38,7 +38,8 @@ export default function HomeScreen({navigation, route}) {
           )}
         />
 
-        <Stack spacing={2} style={{ margin: 16, fontSize: 20 }}>
+        <Stack spacing={2}>
+          {/* Available Balance */}
           <TouchableOpacity onPress={() => navigation.navigate('History')}>
             <View style={styles.mainCardView}>
                 <View style={{ flex: 1, flexDirection: 'col'}}>
@@ -58,6 +59,7 @@ export default function HomeScreen({navigation, route}) {
             </View>
           </TouchableOpacity>
 
+          {/* Deposit */}
           <View style={{ marginRight: 10, marginLeft: 10 }}>
             <Backdrop
               revealed={false}
@@ -76,7 +78,7 @@ export default function HomeScreen({navigation, route}) {
                   )}
                 />
               }
-              backLayer={<View style={{ height: 290}} />}
+              backLayer={<View style={{ height: 300}} />}
             >
               <Text variant='subtitle2' style={{ margin: 20, fontWeight: 'bold' }}>Today</Text>
 
@@ -144,8 +146,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingLeft: 16,
-    paddingRight: 14,
-    marginBottom: 6,
+    paddingRight: 16,
+    marginTop: 16,
+    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
   },

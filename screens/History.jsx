@@ -44,7 +44,7 @@ export default function HistoryScreen({navigation, route}) {
                   <View style={{marginLeft: 8}}>
                       <Text variant='subtitle2'>100</Text>
                       <View style={{ marginTop: 4, borderWidth: 0 }}>
-                        <Text variant='subtitle2' color="gray">07:{i<10? i+1 : i} AM</Text>
+                        <Text variant='subtitle2' color="gray">07:{i<10? `0${i+1}` : i} AM</Text>
                       </View>
                   </View>
                 </View>
