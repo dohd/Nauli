@@ -5,17 +5,14 @@ import {
   Button, 
   Text,
   TextInput,
-  Icon,
   IconButton,
-  IconComponentProvider,
-  Divider
+  Divider,
 } from "@react-native-material/core";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function WithdrawScreen({navigation, route}) {
   return (
-    <IconComponentProvider IconComponent={MaterialCommunityIcons}>
+    
       <View>
         <AppBar
           title="Withdraw Deposit"
@@ -27,51 +24,48 @@ export default function WithdrawScreen({navigation, route}) {
             />
           )}
         />
-
+        
         <View style={styles.mainCardView}>
           <View style={{ paddingTop: 50 }}>
             <View style={{ margin: 16, marginBottom: 10 }}>
-              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text variant='subtitle1' color="gray">Available Balance</Text>
                 <Text variant='h5'>20,000</Text>
               </View>
             </View>
             <Divider leadingInset={26} trailingInset={26} />
 
-            <View style={{ margin: 16, marginBottom: 10 }}>
-              <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginTop: 16 }}>
+            <View style={{ margin: 16, marginBottom: 10, paddingTop: 16 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text variant='subtitle1' color="gray">Withdraw Amount</Text>
                 <TextInput
-                      variant="standard"
-                      // onChangeText={handleChange('password')}
-                      // onBlur={handleBlur('password')}
-                      // value={values.password}
-                    />
+                  variant="standard"
+                  style={{ minWidth: 100, fontSize: 20 }}
+                  // onChangeText={handleChange('password')}
+                  // onBlur={handleBlur('password')}
+                  // value={values.password}
+                />
               </View>
             </View>
 
-            <View style={{ margin: 30}}>
+            
               <Button 
                 title="Withdraw" 
+                style={{ marginLeft: 'auto', marginRight: 'auto', width: '60%', marginTop: 20 }}
                 onPress={() => { 
                   // handleSubmit(); 
                   navigation.navigate('Home'); 
                 }}
               />
-            </View>
+            
           </View>
         </View>
       </View>
-    </IconComponentProvider>
   );
 };
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   mainCardView: {
     height: 300,
     backgroundColor: 'white',
