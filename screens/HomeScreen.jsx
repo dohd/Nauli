@@ -24,7 +24,7 @@ export default function App(props) {
             leading={(props) => (
               <IconButton
                 icon={(props) => (
-                  <Icon name={revealed ? "home" : "menu"} {...props} />
+                  <Icon name={revealed ? "home" : "close"} {...props} />
                 )}
                 onPress={() => setRevealed((prevState) => !prevState)}
                 {...props}
@@ -57,7 +57,7 @@ export default function App(props) {
           onPress={() => props.navigation.navigate("History")}
         />
       </Backdrop>
-      <BottomAppBar />
+      <BottomAppBar {...props} />
     </>
   );
 }
@@ -134,12 +134,13 @@ function Deposits() {
   );
 }
 
-function BottomAppBar() {
+function BottomAppBar({navigation, route}) {
   return (
     <AppBar
       variant="bottom"
       leading={(props) => (
         <IconButton
+          onPress={() => navigation.navigate("SettingsMenu")}
           icon={(props) => <Icon name="menu" {...props} />}
           {...props}
         />
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   mainCardView: {
-    height: 150,
+    height: 160,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
@@ -176,8 +177,8 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     marginTop: 16,
     marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 8,
+    marginRight: 8,
   },
   subCardView: {
     alignItems: "center",
