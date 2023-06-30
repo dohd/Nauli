@@ -1,80 +1,90 @@
 import React from "react";
-import { View, StyleSheet } from 'react-native';
-import { 
-    AppBar, 
-    Text,
-    Icon,
-    IconButton,
-    IconComponentProvider
-} from "@react-native-material/core";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { StyleSheet, View, SafeAreaView, FlatList } from "react-native";
+import { AppBar, Text, IconButton } from "@react-native-material/core";
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
-
-export default function HistoryScreen({navigation, route}) {
+export default function HistoryScreen({ navigation, route }) {
   return (
-    <IconComponentProvider IconComponent={MaterialCommunityIcons}>
-      <View>
-        <AppBar
-          title="History"
-          leading={props => (
-            <IconButton
-                onPress={() => navigation.navigate('Home')}
-                icon={props => <Icon name="keyboard-backspace" {...props} />}
-                {...props}
-            />
-          )}
+    <>
+      <AppBar
+        title="History"
+        leading={(props) => (
+          <IconButton
+            onPress={() => navigation.navigate("Home")}
+            icon={(props) => <Icon name="keyboard-backspace" {...props} />}
+            {...props}
+          />
+        )}
+      />
+      <SafeAreaView style={{ marginTop: 10 }}>
+        <FlatList
+          data={
+          [
+            "Fuxi Isak",
+            "Lola Azra",
+            "Sujata Devyn",
+            "Ida Roman",
+            "Sherry Argider",
+            "Fuxi Isak",
+            "Lola Azra",
+            "Sujata Devyn",
+            "Ida Roman",
+            "Sherry Argider",
+          ]
+          .map((v, i) => ({id: i, value: v}))
+        }
+          renderItem={({item}) => <Transaction id={item.id} value={item.value} />}
+          keyExtractor={item => item.id}
         />
-        <View style={{ marginTop: 10 }}>
-          {
-            ['Fuxi Isak', 'Lola Azra', 'Sujata Devyn', 'Ida Roman', 'Sherry Argider','Fuxi Isak', 'Lola Azra', 'Sujata Devyn', 'Ida Roman', 'Sherry Argider']
-            .map((v, i) => (
-              <View style={styles.mainCardView} key={i}>
-                <View style={{flexDirection: 'row', alignItems: 'center' }}>
-                  <View style={styles.subCardView}>
-                    <Icon name="cash-multiple" size={30} />
-                  </View>
-                  <View style={{marginLeft: 8}}>
-                      <Text variant='subtitle2'>{v}</Text>
-                      <View style={{ marginTop: 4, borderWidth: 0 }}>
-                        <Text variant='subtitle2' color="gray">07{Math.random().toString().slice(2,10)}</Text>
-                      </View>
-                  </View>
-                </View>
-                <View style={{flexDirection: 'row', alignItems: 'center' }}>
-                  <View style={{marginLeft: 8}}>
-                      <Text variant='subtitle2'>100</Text>
-                      <View style={{ marginTop: 4, borderWidth: 0 }}>
-                        <Text variant='subtitle2' color="gray">07:{i<10? `0${i+1}` : i} AM</Text>
-                      </View>
-                  </View>
-                </View>
-              </View>
-            ))
-          }
+        
+      </SafeAreaView>
+    </>
+  );
+}
+
+function Transaction({id, value}) {
+  return (
+    <View style={styles.mainCardView} key={id}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={styles.subCardView}>
+          <Icon name="cash-multiple" size={30} />
+        </View>
+        <View style={{ marginLeft: 8 }}>
+          <Text variant="subtitle2">{value}</Text>
+          <View style={{ marginTop: 4, borderWidth: 0 }}>
+            <Text variant="subtitle2" color="gray">
+              07{Math.random().toString().slice(2, 10)}
+            </Text>
+          </View>
         </View>
       </View>
-    </IconComponentProvider>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ marginLeft: 8 }}>
+          <Text variant="subtitle2">100</Text>
+          <View style={{ marginTop: 4, borderWidth: 0 }}>
+            <Text variant="subtitle2" color="gray">
+              07:{id < 10 ? `0${id + 1}` : id} AM
+            </Text>
+          </View>
+        </View>
+      </View>
+    </View>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
   mainCardView: {
     height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
     borderRadius: 5,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
     shadowRadius: 8,
     elevation: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingLeft: 16,
     paddingRight: 14,
     marginTop: 4,
@@ -83,7 +93,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   subCardView: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
