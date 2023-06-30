@@ -8,7 +8,7 @@ import ForgotPasswordScreen from "./screens/ForgotPasswordScreen";
 import ResetPasswordScreen from "./screens/ResetPasswordScreen";
 import HomeScreen from "./screens/HomeScreen";
 import HistoryScreen from "./screens/History";
-import WithdrawScreen from "./screens/Withdraw";
+import WithdrawScreen from "./screens/WithdrawScreen";
 import SettingsMenuScreen from "./screens/SettingsMenuScreen";
 
 const Stack = createNativeStackNavigator();
