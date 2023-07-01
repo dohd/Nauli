@@ -16,10 +16,15 @@ export default function HistoryScreen({ navigation, route }) {
           />
         )}
       />
-      <SafeAreaView style={{ marginTop: 10 }}>
+      <SafeAreaView style={{ marginTop: 5 }}>
         <FlatList
           data={
           [
+            "Fuxi Isak",
+            "Lola Azra",
+            "Sujata Devyn",
+            "Ida Roman",
+            "Sherry Argider",
             "Fuxi Isak",
             "Lola Azra",
             "Sujata Devyn",
