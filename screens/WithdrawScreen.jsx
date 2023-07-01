@@ -12,11 +12,10 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Formik } from "formik";
 
 export default function WithdrawScreen({ navigation, route }) {
-  const [modalVisible, setModalVisible] = useState(false);
   return (
     <>
       <AppBar
-        title="Withdraw Deposit"
+        title="Confirm Withdrawal"
         leading={(props) => (
           <IconButton
             onPress={() => navigation.navigate("Home")}
@@ -28,53 +27,50 @@ export default function WithdrawScreen({ navigation, route }) {
 
       <View style={styles.mainCardView}>
         <View style={{ paddingTop: 50 }}>
-          <View style={{ margin: 16, marginBottom: 10 }}>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text variant="subtitle1" color="gray">
-                Available Balance
-              </Text>
-              <Text variant="h5">20,000</Text>
-            </View>
+          
+          <View style={{ flexDirection: "column", alignItems: "center" }}>
+            <Text variant="h5" color="gray" style={{ marginBottom: 25 }}>Proceed To Withdraw</Text>
+            <Text variant="h5" style={{ marginBottom: 25 }}>Ksh. 20,000</Text>
+            <TextInput
+              label="Enter OTP Code*"
+              variant="standard"
+              style={{ minWidth: 150, fontSize: 20 }}
+              // onChangeText={handleChange('password')}
+              // onBlur={handleBlur('password')}
+              // value={values.password}
+            />
           </View>
-          <Divider leadingInset={26} trailingInset={26} />
+          
 
-          <View style={{ margin: 16, marginBottom: 10, paddingTop: 16 }}>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text variant="subtitle1" color="gray">
-                Withdraw Amount
-              </Text>
-              <TextInput
-                variant="standard"
-                style={{ minWidth: 150, fontSize: 20 }}
-                // onChangeText={handleChange('password')}
-                // onBlur={handleBlur('password')}
-                // value={values.password}
-              />
-            </View>
-          </View>
+          
 
           <Button
-            title="Withdraw"
+            title="Confirm"
             style={{
               marginLeft: "auto",
               marginRight: "auto",
               width: "60%",
-              marginTop: 20,
+              marginTop: 40,
             }}
             onPress={() => {
               // handleSubmit();
-              // navigation.navigate("Home");
-              setModalVisible(true);
+              navigation.navigate("Home");
             }}
           />
 
-          <ConfirmWithdrawalModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
+          <Button
+            title="Cancel"
+            variant="outlined"
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              width: "40%",
+              marginTop: 30,
+            }}
+            onPress={() => {
+              // handleSubmit();
+              navigation.navigate("Home");
+            }}
           />
         </View>
       </View>
@@ -82,55 +78,10 @@ export default function WithdrawScreen({ navigation, route }) {
   );
 }
 
-function ConfirmWithdrawalModal({ modalVisible, setModalVisible }) {
-  return (
-    <View style={styles.centeredView}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Formik
-              initialValues={{ password: "", username: "" }}
-              onSubmit={(values) => console.log(values)}
-            >
-              {({ handleChange, handleBlur, handleSubmit, values }) => (
-                <View>
-                  <TextInput
-                    label="OTP Code *"
-                    variant="standard"
-                    onChangeText={handleChange("otp_code")}
-                    onBlur={handleBlur("otp_code")}
-                    value={values.otp_code}
-                    style={{ minWidth: 200, marginBottom: 5 }}
-                  />
-
-                  <Button
-                    title="Confirm"
-                    style={{ marginTop: 10 }}
-                    onPress={() => {
-                      handleSubmit();
-                      setModalVisible(!modalVisible)
-                    }}
-                  />
-                </View>
-              )}
-            </Formik>
-          </View>
-        </View>
-      </Modal>
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   mainCardView: {
-    height: 300,
+    height: 400,
     backgroundColor: "white",
     borderRadius: 15,
     shadowOffset: { width: 0, height: 0 },
@@ -142,26 +93,4 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
-  // modal
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    padding: 35,
-    borderRadius: 20,
-    elevation: 5,
-    backgroundColor: "white",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-  }, 
 });
