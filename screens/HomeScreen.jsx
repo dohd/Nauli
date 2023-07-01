@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, SafeAreaView, FlatList, Modal } from "react-native";
 import {
   Backdrop,
   BackdropSubheader,
@@ -8,133 +8,161 @@ import {
   Divider,
   Button,
   Text,
+  TextInput,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { Formik } from "formik";
+import {WithdrawModal} from "./modals/WithdrawModal";
 
-export default function App(props) {
-  const [revealed, setRevealed] = useState(true);
+export default function HomeScreen(props) {
+  const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
+  props = {withdrawModalVisible, setWithdrawModalVisible, ...props};
   return (
     <>
       <Backdrop
-        revealed={revealed}
+        revealed={true}
         header={
           <AppBar
             title="Demo App"
             transparent
             leading={(props) => (
               <IconButton
-                icon={(props) => (
-                  <Icon name={revealed ? "home" : "close"} {...props} />
-                )}
-                onPress={() => setRevealed((prevState) => !prevState)}
                 {...props}
+                icon={(props) => (
+                  <Icon name='home' {...props} />
+                )}
               />
             )}
           />
         }
-        backLayer={<AvailableBalance {...props} />}
+        backLayer={
+          <>
+            <AvailableBalance {...props} />
+            <WithdrawModal {...props} />
+          </>
+        }
       >
+        {/* Deposit subheader */}
         <BackdropSubheader
-          title="Deposit"
+          title="Fare Deposits"
           trailing={() => (
-            <IconButton
-              icon={() => <Icon name="bank-transfer" size={40} color="black" />}
-              onPress={() => props.navigation.navigate("Withdraw")}
+            <Button
+              title="See More"
+              uppercase={false}
+              variant="outlined"
+              onPress={() => props.navigation.navigate("History")}
             />
           )}
         />
-        <Deposits />
-        <Button
-          title="See more"
-          uppercase={false}
-          variant="outline"
-          style={{
-            marginTop: 5,
-            marginLeft: "auto",
-            marginRight: "auto",
-            width: "50%",
-          }}
-          onPress={() => props.navigation.navigate("History")}
-        />
+
+        {/* Deposit list */}
+        <SafeAreaView>
+          <FlatList
+            data={
+            [
+              "Fuxi Isak",
+              "Lola Azra",
+              "Sujata Devyn",
+              "Ida Roman",
+              "Sherry Argider",
+            ]
+            .map((v, i) => ({id: i, value: v}))
+          }
+            renderItem={({item}) => <FareDeposit id={item.id} value={item.value} />}
+            keyExtractor={item => item.id}
+          />
+        </SafeAreaView>
+        
+        
       </Backdrop>
       <BottomAppBar {...props} />
     </>
   );
 }
 
-function AvailableBalance({ navigation, route }) {
+function AvailableBalance(props) {
   return (
-    <View style={{ height: 200 }}>
-      <TouchableOpacity onPress={() => navigation.navigate("History")}>
-        <View style={styles.mainCardView}>
-          <View style={{ flex: 1 }}>
-            <Text variant="subtitle1" color="gray" style={{ marginBottom: 10 }}>
-              Available Balance
-            </Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={styles.subCardView}>
-                <Icon name="wallet" size={60} />
-              </View>
-              <View style={{ marginLeft: 12 }}>
-                <View style={{ marginTop: 4, borderWidth: 0 }}>
-                  <Text variant="h4">20,000.00</Text>
-                </View>
+    <View style={{ height: 210 }}>
+      <View style={styles.mainCardView}>
+        <View style={{ flex: 1 }}>
+          <Text variant="subtitle1" color="gray" style={{ marginBottom: 10 }}>
+            Available Balance
+          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={styles.subCardView}>
+              <Icon name="wallet" size={70} />
+            </View>
+            <View style={{ marginLeft: 12 }}>
+              <View style={{ marginTop: 2, borderWidth: 0 }}>
+                <Text variant="h4">Ksh. 20,000.00</Text>
               </View>
             </View>
-            <Text variant="subtitle2" color="gray" style={{ marginTop: 20 }}>
-              See details
-            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 10,
+            }}
+          >
+            <Button
+              title="See Details"
+              uppercase={false}
+              variant="outlined"
+              style={{ width: "40%", marginLeft: 10}}
+              onPress={() => props.navigation.navigate("History")}
+            />
+            <Button
+              title="Withdraw"
+              uppercase={false}
+              style={{ width: "40%", marginRight: 20 }}
+              onPress={() => {
+                // navigation.navigate("Withdraw")
+                props.setWithdrawModalVisible(true);
+              }}
+            />
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-function Deposits() {
+function FareDeposit({id, value}) {
   return (
-    <View>
-      {[
-        "Fuxi Isak",
-        "Lola Azra",
-        "Sujata Devyn",
-        "Ida Roman",
-        "Sherry Argider",
-      ].map((v, i) => (
-        <View key={i}>
-          <View style={styles.listItemView} key={0}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={styles.subCardView}>
-                <Icon name="cash-multiple" size={30} />
-              </View>
-              <View style={{ marginLeft: 8 }}>
-                <Text variant="subtitle2">{v}</Text>
-                <View style={{ marginTop: 4, borderWidth: 0 }}>
-                  <Text variant="subtitle2" color="gray">
-                    07{Math.random().toString().slice(2, 10)}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <View style={{ marginLeft: 8 }}>
-                <Text variant="subtitle2">100</Text>
-                <View style={{ marginTop: 4, borderWidth: 0 }}>
-                  <Text variant="subtitle2" color="gray">
-                    07:0{i + 1} AM
-                  </Text>
-                </View>
-              </View>
+    <View key={id}>
+      <View style={styles.listItemView} key={0}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={styles.subCardView}>
+            <Icon name="cash-multiple" size={30} />
+          </View>
+          <View style={{ marginLeft: 8 }}>
+            <Text variant="subtitle2">{value}</Text>
+            <View style={{ marginTop: 4, borderWidth: 0 }}>
+              <Text variant="subtitle2" color="gray">
+                07{Math.random().toString().slice(2, 10)}
+              </Text>
             </View>
           </View>
-          <Divider leadingInset={26} trailingInset={26} />
         </View>
-      ))}
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ marginLeft: 8 }}>
+            <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. 100</Text>
+            <View style={{ marginTop: 4, borderWidth: 0 }}>
+              <Text variant="subtitle2" color="gray">
+                07:0{id + 1} AM
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <Divider leadingInset={26} trailingInset={26} />
     </View>
   );
 }
 
-function BottomAppBar({navigation, route}) {
+function BottomAppBar({ navigation, route }) {
   return (
     <AppBar
       variant="bottom"
@@ -151,8 +179,7 @@ function BottomAppBar({navigation, route}) {
           {...props}
         />
       )}
-    >
-    </AppBar>
+    ></AppBar>
   );
 }
 
@@ -162,7 +189,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   mainCardView: {
-    height: 160,
+    height: 180,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
@@ -175,10 +202,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingLeft: 16,
     paddingRight: 16,
-    marginTop: 16,
+    marginTop: 10,
     marginBottom: 10,
-    marginLeft: 8,
-    marginRight: 8,
+    marginLeft: 2,
+    marginRight: 2,
   },
   subCardView: {
     alignItems: "center",
