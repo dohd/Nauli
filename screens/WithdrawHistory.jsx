@@ -42,10 +42,12 @@ function Transaction({id, value}) {
           <Icon name="cash-multiple" size={30} />
         </View>
           <View style={{ marginLeft: 8 }}>
+            <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>
+              {(new Date()).toLocaleDateString()}
+            </Text>
             <Text variant="subtitle2" color="gray">
               07:{id < 10 ? `0${id + 1}` : id} AM
             </Text>
-          
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
