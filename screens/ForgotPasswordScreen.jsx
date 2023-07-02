@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { Button, TextInput } from "@react-native-material/core";
+import { StyleSheet, View } from "react-native";
+import { Button, TextInput, Text, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
 
 export default function ForgotPasswordScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 28, fontWeight: "bold", marginBottom: 15 }}>
+      <Text variant="h5" style={{ fontWeight: "bold", marginBottom: 20 }}>
         Forgot Password
       </Text>
       <Formik
@@ -14,19 +14,18 @@ export default function ForgotPasswordScreen({ navigation }) {
         onSubmit={(values) => console.log(values)}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View>
+          <VStack spacing={20} style={{ minWidth: 280 }}>
             <TextInput
-              label="Username / Phone"
+              label="Username / Phone Number"
               variant="standard"
               onChangeText={handleChange("username")}
               onBlur={handleBlur("username")}
               value={values.username}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
 
             <Button
               title="Submit"
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 20 }}
               onPress={() => {
                 handleSubmit();
                 navigation.navigate("ResetPassword", {
@@ -34,7 +33,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 });
               }}
             />
-          </View>
+          </VStack>
         )}
       </Formik>
     </View>

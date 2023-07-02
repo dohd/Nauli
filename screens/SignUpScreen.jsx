@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { Button, TextInput } from "@react-native-material/core";
+import { StyleSheet, View } from "react-native";
+import { Button, TextInput, Text, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
 
 export default function SignUpScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 30, fontWeight: "bold", marginBottom: 15 }}>
+      <Text variant="h5" style={{ fontWeight: "bold", marginBottom: 20 }}>
         Sign Up
       </Text>
       <Formik
@@ -14,14 +14,13 @@ export default function SignUpScreen({ navigation }) {
         onSubmit={(values) => console.log(values)}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View>
+          <VStack spacing={20} style={{ minWidth: 280 }}>
             <TextInput
               label="Phone Number *"
               variant="standard"
               onChangeText={handleChange("phone_no")}
               onBlur={handleBlur("phone_no")}
               value={values.phone_no}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
             <TextInput
               label="Username"
@@ -29,7 +28,6 @@ export default function SignUpScreen({ navigation }) {
               onChangeText={handleChange("username")}
               onBlur={handleBlur("username")}
               value={values.username}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
             <TextInput
               label="Password *"
@@ -37,7 +35,6 @@ export default function SignUpScreen({ navigation }) {
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
             <TextInput
               label="Confirm Password *"
@@ -45,7 +42,6 @@ export default function SignUpScreen({ navigation }) {
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
             <Button
               title="Sign up"
@@ -55,16 +51,16 @@ export default function SignUpScreen({ navigation }) {
                 navigation.navigate("Home", { name: "Logged In user" });
               }}
             />
-          </View>
+          </VStack>
         )}
       </Formik>
       <View style={{ flexDirection: "row", marginTop: 25 }}>
-        <Text style={{ fontWeight: "bold", paddingTop: 8 }}>
-          Already have an account?{" "}
+        <Text style={{ fontWeight: "bold", paddingTop: 7 }}>
+          Already have an account? 
         </Text>
         <Button
           title="Login"
-          variant="outline"
+          variant="text"
           onPress={() => {
             navigation.navigate("Login");
           }}

@@ -1,12 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { Button, TextInput } from "@react-native-material/core";
+import { StyleSheet, View } from "react-native";
+import { Button, TextInput, Text, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
 
 export default function ResetPasswordScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 28, fontWeight: "bold", marginBottom: 15 }}>
+      <Text variant="h5" style={{ fontWeight: "bold", marginBottom: 20 }}>
         Reset Password
       </Text>
       <Formik
@@ -14,14 +14,13 @@ export default function ResetPasswordScreen({ navigation }) {
         onSubmit={(values) => console.log(values)}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View>
+          <VStack spacing={20} style={{ minWidth: 280 }}>
             <TextInput
               label="OTP Code *"
               variant="standard"
               onChangeText={handleChange("otp_code")}
               onBlur={handleBlur("otp_code")}
               value={values.otp_code}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
 
             <TextInput
@@ -30,7 +29,6 @@ export default function ResetPasswordScreen({ navigation }) {
               onChangeText={handleChange("password")}
               onBlur={handleBlur("password")}
               value={values.password}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
             <TextInput
               label="Confirm Password *"
@@ -38,18 +36,17 @@ export default function ResetPasswordScreen({ navigation }) {
               onChangeText={handleChange("confirm_password")}
               onBlur={handleBlur("confirm_password")}
               value={values.confirm_password}
-              style={{ minWidth: 300, marginBottom: 5 }}
             />
 
             <Button
               title="Reset"
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 20 }}
               onPress={() => {
                 handleSubmit();
                 navigation.navigate("Login", { name: "Logged In user" });
               }}
             />
-          </View>
+          </VStack>
         )}
       </Formik>
     </View>
