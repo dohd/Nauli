@@ -25,7 +25,7 @@ export default function LoginScreen({ navigation }) {
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <VStack spacing={20} style={{ minWidth: 280 }}>
             <TextInput
-              label="Username / Phone"
+              label="Username / Phone Number"
               variant="standard"
               onChangeText={handleChange("username")}
               onBlur={handleBlur("username")}
