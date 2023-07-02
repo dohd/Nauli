@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import {
-  AppBar,
   Button,
   Text,
   TextInput,
-  IconButton,
   Divider,
 } from "@react-native-material/core";
-import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Formik } from "formik";
 
 export function WithdrawModal(props) {

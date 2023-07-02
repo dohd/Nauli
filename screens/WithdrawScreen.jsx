@@ -41,9 +41,6 @@ export default function WithdrawScreen({ navigation, route }) {
             />
           </View>
           
-
-          
-
           <Button
             title="Confirm"
             style={{
@@ -83,14 +80,13 @@ const styles = StyleSheet.create({
   mainCardView: {
     height: 400,
     backgroundColor: "white",
-    borderRadius: 15,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
     shadowRadius: 8,
     elevation: 8,
-    marginTop: 16,
-    marginBottom: 6,
     marginLeft: 10,
     marginRight: 10,
+    marginTop: 10,
+    borderRadius: 10,
   },
 });
