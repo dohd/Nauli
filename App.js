@@ -9,7 +9,7 @@ import ResetPasswordScreen from "./screens/ResetPasswordScreen";
 import HomeScreen from "./screens/HomeScreen";
 import HistoryScreen from "./screens/History";
 import WithdrawScreen from "./screens/WithdrawScreen";
-import SettingsMenuScreen from "./screens/SettingsMenuScreen";
+import SettingsScreen from "./screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -54,7 +54,7 @@ export default function App() {
         />
         <Stack.Screen
           name="SettingsMenu"
-          component={SettingsMenuScreen}
+          component={SettingsScreen}
           options={{ headerShown: false}}
         />
       </Stack.Navigator>
