@@ -31,58 +31,56 @@ function FormInput(props) {
   return (
     <Formik
       initialValues={{ password: "", username: "" }}
-      onSubmit={(values) => console.log(values)}
+      onSubmit={(values) => {
+        console.log(values);
+        props.setPasswordModalVisible(false);
+      }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
-        <VStack spacing={20}>
+        <VStack spacing={15}>
           <TextInput
             label="Current Password*"
             variant="standard"
             style={{ fontSize: 20 }}
-            // onChangeText={handleChange('password')}
-            // onBlur={handleBlur('password')}
-            // value={values.password}
+            onChangeText={handleChange('current_password')}
+            onBlur={handleBlur('current_password')}
+            value={values.current_password}
           />
+
           <TextInput
             label="New Password*"
             variant="standard"
             style={{ fontSize: 20 }}
-            // onChangeText={handleChange('password')}
-            // onBlur={handleBlur('password')}
-            // value={values.password}
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            value={values.password}
           />
-
 
           <TextInput
             label="Confirm Password*"
             variant="standard"
             style={{ fontSize: 20 }}
-            // onChangeText={handleChange('password')}
-            // onBlur={handleBlur('password')}
-            // value={values.password}
+            onChangeText={handleChange('confirm_password')}
+            onBlur={handleBlur('confirm_password')}
+            value={values.confirm_password}
           />
 
-          <HStack spacing={40} style={{ marginTop: 40 }}>
+          <HStack spacing={40} style={{ marginTop: 20 }}>
             <Button
               title="Cancel"
               variant="outlined"
               style={{ width: "40%", marginLeft: 10 }}
               onPress={() => {
-                // handleSubmit();
                 props.setPasswordModalVisible(false);
-                // props.navigation.navigate("Settings");
               }}
             />
             <Button
               title="Save"
               style={{ width: "40%" }}
               onPress={() => {
-                // handleSubmit();
-                props.setPasswordModalVisible(false);
-                // props.navigation.navigate("Settings");
+                handleSubmit();
               }}
             />
-
           </HStack>
         </VStack>
       )}
@@ -92,7 +90,7 @@ function FormInput(props) {
 
 const styles = StyleSheet.create({
   mainCardView: {
-    height: 400,
+    height: 350,
     backgroundColor: "white",
     borderRadius: 15,
     shadowOffset: { width: 0, height: 0 },

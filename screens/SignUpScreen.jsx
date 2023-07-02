@@ -7,7 +7,7 @@ export default function SignUpScreen({ navigation }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
   return (
     <View style={styles.container}>
-      <Text variant="h5" style={{ fontWeight: "bold", marginBottom: 20 }}>
+      <Text variant="h4" style={{ fontWeight: "bold", marginBottom: 20 }}>
         Sign Up
       </Text>
       <Formik
@@ -23,7 +23,7 @@ export default function SignUpScreen({ navigation }) {
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <VStack spacing={20} style={{ minWidth: 280 }}>
+          <VStack spacing={15} style={{ minWidth: 280 }}>
             <TextInput
               label="Phone Number *"
               variant="standard"
@@ -48,9 +48,9 @@ export default function SignUpScreen({ navigation }) {
             <TextInput
               label="Confirm Password *"
               variant="standard"
-              onChangeText={handleChange("password")}
-              onBlur={handleBlur("password")}
-              value={values.password}
+              onChangeText={handleChange("confirm_password")}
+              onBlur={handleBlur("confirm_password")}
+              value={values.confirm_password}
             />
             <Button
               title="Sign up"

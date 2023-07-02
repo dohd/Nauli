@@ -160,12 +160,14 @@ function BottomAppBar({ navigation, route }) {
           onPress={() => navigation.navigate("SettingsMenu")}
           icon={(props) => <Icon name="cog" {...props} />}
           {...props}
+          style={{ marginLeft: 10 }}
         />
       )}
       trailing={(props) => (
         <IconButton
           icon={(props) => <Icon name="magnify" {...props} />}
           {...props}
+          style={{ marginRight: 10 }}
         />
       )}
     ></AppBar>
