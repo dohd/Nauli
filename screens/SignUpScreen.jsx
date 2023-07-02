@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, TextInput, Text, VStack } from "@react-native-material/core";
+import { Button, TextInput, Text, VStack, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
 
 export default function SignUpScreen({ navigation }) {
+  const [loaderVisible, setLoaderVisible] = useState(false);
   return (
     <View style={styles.container}>
       <Text variant="h5" style={{ fontWeight: "bold", marginBottom: 20 }}>
@@ -11,7 +12,15 @@ export default function SignUpScreen({ navigation }) {
       </Text>
       <Formik
         initialValues={{ password: "", username: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {
+          console.log(values);
+          setLoaderVisible(true);
+          // api call
+          setTimeout(() => {
+            setLoaderVisible(false);
+            navigation.navigate("Home");
+          }, 1000);
+        }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <VStack spacing={20} style={{ minWidth: 280 }}>
@@ -45,10 +54,15 @@ export default function SignUpScreen({ navigation }) {
             />
             <Button
               title="Sign up"
+              trailing={props => (
+                loaderVisible ? 
+                <ActivityIndicator size="small" color="on-primary" /> :
+                null
+              )}  
+              disabled={loaderVisible}
               style={{ marginTop: 20 }}
               onPress={() => {
                 handleSubmit();
-                navigation.navigate("Home", { name: "Logged In user" });
               }}
             />
           </VStack>

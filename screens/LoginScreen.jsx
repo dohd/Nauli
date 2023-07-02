@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useState} from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, TextInput, VStack, Text } from "@react-native-material/core";
+import { Button, TextInput, VStack, Text, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
 
 export default function LoginScreen({ navigation }) {
+  const [loaderVisible, setLoaderVisible] = useState(false);
   return (
     <View style={styles.container}>
       <Text variant="h4" style={{ fontWeight: "bold", marginBottom: 20 }}>
@@ -11,7 +12,15 @@ export default function LoginScreen({ navigation }) {
       </Text>
       <Formik
         initialValues={{ password: "", username: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => {
+          console.log(values);
+          setLoaderVisible(true);
+          // api call
+          setTimeout(() => {
+            setLoaderVisible(false);
+            navigation.navigate("Home");
+          }, 1000);
+        }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
           <VStack spacing={20} style={{ minWidth: 280 }}>
@@ -32,10 +41,15 @@ export default function LoginScreen({ navigation }) {
 
             <Button
               title="Login"
+              trailing={props => (
+                loaderVisible ? 
+                <ActivityIndicator size="small" color="on-primary" /> :
+                null
+              )}         
+              disabled={loaderVisible}
               style={{ marginTop: 20 }}
               onPress={() => {
                 handleSubmit();
-                navigation.navigate("Home", { name: "Logged In user" });
               }}
             />
           </VStack>
@@ -53,7 +67,7 @@ export default function LoginScreen({ navigation }) {
       />
 
       <View style={{ flexDirection: 'row', marginTop: 30 }}>
-        <Text style={{ fontWeight: "bold", paddingTop: 8 }}>Create an account?</Text>
+        <Text style={{ fontWeight: "bold", paddingTop: 7 }}>Create an account?</Text>
         <Button
           title="SignUp"
           variant="text"

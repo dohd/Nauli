@@ -62,8 +62,6 @@ export default function HomeScreen(props) {
             keyExtractor={item => item.id}
           />
         </SafeAreaView>
-        
-        
       </Backdrop>
       <BottomAppBar {...props} />
     </>
