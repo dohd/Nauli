@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList, Modal } from "react-native";
+import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import {
   Backdrop,
   BackdropSubheader,
@@ -8,11 +8,9 @@ import {
   Divider,
   Button,
   Text,
-  TextInput,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import { Formik } from "formik";
-import {WithdrawModal} from "./modals/WithdrawModal";
+import {WithdrawModal} from "./WithdrawModal";
 
 export default function HomeScreen(props) {
   const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
@@ -25,14 +23,6 @@ export default function HomeScreen(props) {
           <AppBar
             title="Demo App"
             transparent
-            leading={(props) => (
-              <IconButton
-                {...props}
-                icon={(props) => (
-                  <Icon name='home' {...props} />
-                )}
-              />
-            )}
           />
         }
         backLayer={
@@ -165,11 +155,12 @@ function FareDeposit({id, value}) {
 function BottomAppBar({ navigation, route }) {
   return (
     <AppBar
+      style={{ position: 'absolute', start: 0, end: 0, bottom: 0 }}
       variant="bottom"
       leading={(props) => (
         <IconButton
           onPress={() => navigation.navigate("SettingsMenu")}
-          icon={(props) => <Icon name="menu" {...props} />}
+          icon={(props) => <Icon name="cog" {...props} />}
           {...props}
         />
       )}
