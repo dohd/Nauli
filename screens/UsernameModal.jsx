@@ -74,7 +74,7 @@ function FormInput(props) {
 
 const styles = StyleSheet.create({
   mainCardView: {
-    height: 300,
+    height: 250,
     backgroundColor: "white",
     borderRadius: 15,
     shadowOffset: { width: 0, height: 0 },
