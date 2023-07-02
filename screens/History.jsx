@@ -12,7 +12,7 @@ export default function HistoryScreen({ navigation, route }) {
   return (
     <>
       <AppBar
-        title="Transactions"
+        title="Transaction History"
         leading={(props) => (
           <IconButton
             onPress={() => navigation.navigate("Home")}
