@@ -66,7 +66,7 @@ function FormInput(props) {
             <Button
               title="Cancel"
               variant="outlined"
-              style={{ width: "40%" }}
+              style={{ width: "40%", marginLeft: 10 }}
               onPress={() => {
                 // handleSubmit();
                 props.setPasswordModalVisible(false);
