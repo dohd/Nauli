@@ -26,6 +26,15 @@ export default function SettingsScreen({ navigation, route }) {
 
       <View style={styles.mainCardView}>
         <VStack>
+          <ListItem
+            title="User Management"
+            secondaryText="Add or Disable User"
+            leading={<Icon name="account-multiple-plus" size={24} />}
+            trailing={(props) => <Icon name="chevron-right" {...props} />}
+            onPress={() => {
+              navigation.navigate('Users');
+            }}
+          />
           
           <ListItem
             title="Username"
@@ -57,6 +66,7 @@ export default function SettingsScreen({ navigation, route }) {
           
           <ListItem
             title="Logout"
+            secondaryText="End Session"
             leading={<Icon name="logout-variant" size={24} />}
             onPress={() => {
               navigation.navigate("Login");

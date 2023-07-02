@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import LoginScreen from "./screens/LoginScreen";
@@ -10,6 +10,7 @@ import HomeScreen from "./screens/HomeScreen";
 import HistoryScreen from "./screens/History";
 import WithdrawScreen from "./screens/WithdrawScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import UsersScreen from "./screens/UsersScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +56,11 @@ export default function App() {
         <Stack.Screen
           name="SettingsMenu"
           component={SettingsScreen}
+          options={{ headerShown: false}}
+        />
+        <Stack.Screen
+          name="Users"
+          component={UsersScreen}
           options={{ headerShown: false}}
         />
       </Stack.Navigator>
