@@ -11,11 +11,19 @@ import {
   Spacer,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import accounting from "accounting-js";
+
 import {WithdrawModal} from "./WithdrawModal";
+
 
 export default function HomeScreen(props) {
   const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
   props = {withdrawModalVisible, setWithdrawModalVisible, ...props};
+
+  // fetch available balance
+  let accountBalance = 25000;
+  props.accountBalance = accounting.formatNumber(accounting.unformat(accountBalance));
+
   return (
     <>
       <Backdrop
@@ -84,7 +92,7 @@ function AvailableBalance(props) {
             </View>
             <View style={{ marginLeft: 12 }}>
               <View style={{ marginTop: 2, borderWidth: 0 }}>
-                <Text variant="h4">Ksh. 20,000.00</Text>
+                <Text variant="h4">Ksh. {props.accountBalance}</Text>
               </View>
             </View>
           </View>

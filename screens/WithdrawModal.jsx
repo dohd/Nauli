@@ -7,6 +7,7 @@ import {
   Divider,
 } from "@react-native-material/core";
 import { Formik } from "formik";
+import accounting from "accounting-js";
 
 export function WithdrawModal(props) {
   return (
@@ -32,7 +33,7 @@ export function WithdrawModal(props) {
                   <Text variant="subtitle1" color="gray">
                     Available Balance
                   </Text>
-                  <Text variant="h5">20,000</Text>
+                  <Text variant="h5">{props.accountBalance}</Text>
                 </View>
               </View>
               <Divider leadingInset={26} trailingInset={26} />
@@ -49,47 +50,51 @@ export function WithdrawModal(props) {
 function FormInput(props) {
     return (
         <Formik
-            initialValues={{ password: "", username: "" }}
-            onSubmit={(values) => console.log(values)}
+          initialValues={{ withdraw_amount: "" }}
+          onSubmit={(values) => {
+            // console.log(values)
+            amount = accounting.unformat(values.withdraw_amount);
+            accountBalance = accounting.unformat(props.accountBalance);
+            if (amount > 0 && amount <= accountBalance) {
+              props.navigation.navigate("Withdraw", values);
+            }
+          }}
         >
-            {({ handleChange, handleBlur, handleSubmit, values }) => (
-                <>
-                    <View style={{ margin: 16, paddingTop: 16 }}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                            <Text variant="subtitle1" color="gray">Withdraw Amount</Text>
-                            <TextInput
-                                variant="standard"
-                                style={{ minWidth: 150, fontSize: 20 }}
-                                // onChangeText={handleChange('password')}
-                                // onBlur={handleBlur('password')}
-                                // value={values.password}
-                            />
-                        </View>
-                    </View>
+          {({ handleChange, handleBlur, handleSubmit, values }) => (
+            <>
+              <View style={{ margin: 16, paddingTop: 16 }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                      <Text variant="subtitle1" color="gray">Withdraw Amount</Text>
+                      <TextInput
+                        variant="standard"
+                        style={{ minWidth: 150, fontSize: 20 }}
+                        onChangeText={handleChange('withdraw_amount')}
+                        onBlur={handleBlur('withdraw_amount')}
+                        value={values.withdraw_amount}
+                      />
+                  </View>
+              </View>
 
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-                        <Button
-                            title="Cancel"
-                            variant="outlined"
-                            style={{ width: "40%", marginLeft: 15 }}
-                            onPress={() => {
-                                // handleSubmit();
-                                // navigation.navigate("Home");
-                                props.setWithdrawModalVisible(false);
-                            }}
-                        />
-                        <Button
-                            title="Proceed"
-                            style={{ width: "40%", marginRight: 15 }}
-                            onPress={() => {
-                                // handleSubmit();
-                                props.setWithdrawModalVisible(false);
-                                props.navigation.navigate("Withdraw");
-                            }}
-                        />
-                    </View>
-                </>
-            )}
+              <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
+                  <Button
+                      title="Cancel"
+                      variant="outlined"
+                      style={{ width: "40%", marginLeft: 15 }}
+                      onPress={() => {
+                        props.setWithdrawModalVisible(false);
+                      }}
+                  />
+                  <Button
+                      title="Proceed"
+                      style={{ width: "40%", marginRight: 15 }}
+                      onPress={() => {
+                        props.setWithdrawModalVisible(false);
+                        handleSubmit();
+                      }}
+                  />
+              </View>
+            </>
+          )}
         </Formik>
     );
 }

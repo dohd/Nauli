@@ -11,9 +11,15 @@ import {
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Formik } from "formik";
+import accounting from "accounting-js";
 
 export default function WithdrawScreen({ navigation, route }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
+
+  // withdraw amount
+  let withdrawAmount = route.params.withdraw_amount;
+  withdrawAmount = accounting.formatNumber(accounting.unformat(withdrawAmount));
+
   return (
     <>
       <AppBar
@@ -34,7 +40,7 @@ export default function WithdrawScreen({ navigation, route }) {
               Proceed To Withdraw
             </Text>
             <Text variant="h5" style={{ marginBottom: 25 }}>
-              Ksh. 20,000
+              Ksh. { withdrawAmount }
             </Text>
           </View>
 
