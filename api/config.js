@@ -1,25 +1,30 @@
-import axios from 'axios';
+import axios from "axios";
+import SyncStorage from 'sync-storage';
+
+// set reverse proxy for localhost access before starting local server
+// i.e adb reverse tcp:8000 tcp:8000
 
 const Api = axios.create({
-    baseURL: 'http://localhost',
+    baseURL: 'http://localhost:8000/api',
     withCredentials: true,
     timeout: 15000,
-    timeoutErrorMessage: 'timeout'
+    timeoutErrorMessage: 'timeout',
 });
 
 // Request interceptor
 Api.interceptors.request.use(config => {
-    const token = sessionStorage.getItem('accessToken');
+    const token = SyncStorage.get('accessToken');
     config.headers.Authorization = `Bearer ${token}`;
     return config;
-}, err => Promise.reject(err));
+}, error => Promise.reject(error));
 
 // Response interceptor
-// instance.interceptors.response.use(response => {
-//     return response.data;
-// }, err => {
-//     const errorData = err.response?.data; //optional chaining
-//     return errorData ? errorHandler(errorData) : Promise.reject(err);
-// });
+Api.interceptors.response.use(response => {
+    return response.data;
+}, error => {
+    if (error.response && error.response.data) 
+        return Promise.reject(error.response.data);
+    return Promise.reject(error);
+});
 
 export default Api;
