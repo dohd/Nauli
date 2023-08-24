@@ -2,24 +2,34 @@ import React, {useState} from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, VStack, Text, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
+import SyncStorage from 'sync-storage';
+import { showMessage } from "react-native-flash-message";
+
+import Api from "../api/config";
 
 export default function LoginScreen({ navigation }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
+
   return (
     <View style={styles.container}>
       <Text variant="h4" style={{ fontWeight: "bold", marginBottom: 20 }}>
         Welcome
       </Text>
       <Formik
-        initialValues={{ password: "", username: "" }}
+        initialValues={{ username: "", password: "" }}
         onSubmit={(values) => {
-          console.log(values);
-          setLoaderVisible(true);
-          // api call
-          setTimeout(() => {
+          setLoaderVisible(true);          
+          // fetch access token
+          Api.post('/login', values)
+          .then(data => {
             setLoaderVisible(false);
+            SyncStorage.set('accessToken', data.token);
             navigation.navigate("Home");
-          }, 1000);
+          })
+          .catch(error => { 
+            setLoaderVisible(false);
+            showMessage({message: error.message, type: 'danger'});
+          });
         }}
       >
         {({ handleChange, handleBlur, handleSubmit, values }) => (
