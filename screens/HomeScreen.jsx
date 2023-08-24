@@ -8,6 +8,7 @@ import {
   Divider,
   Button,
   Text,
+  Spacer,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import {WithdrawModal} from "./WithdrawModal";
@@ -54,13 +55,14 @@ export default function HomeScreen(props) {
               "Lola Azra",
               "Sujata Devyn",
               "Ida Roman",
-              "Sherry Argider",
+              "Sherry Argider"
             ]
             .map((v, i) => ({id: i, value: v}))
           }
             renderItem={({item}) => <FareDeposit id={item.id} value={item.value} />}
             keyExtractor={item => item.id}
           />
+          <Spacer />
         </SafeAreaView>
       </Backdrop>
       <BottomAppBar {...props} />
