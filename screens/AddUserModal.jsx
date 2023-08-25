@@ -2,6 +2,8 @@ import React from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, Text, TextInput, HStack, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
+import { showMessage } from "react-native-flash-message";
+import Api from "../api/config";
 
 export function AddUserModal(props) {
   return (
@@ -10,9 +12,7 @@ export function AddUserModal(props) {
         animationType="fade"
         transparent={true}
         visible={props.addUserModalVisible}
-        onRequestClose={() => {
-          props.setAddUserModalVisible(false);
-        }}
+        onRequestClose={() => props.setAddUserModalVisible(false)}
       >
         <View style={styles.centeredView}>
           <View style={styles.mainCardView}>
@@ -30,24 +30,33 @@ export function AddUserModal(props) {
 function FormInput(props) {
   return (
     <Formik
-      initialValues={{ username: "", phone:"" }}
+      initialValues={{ name: "", phone:"" }}
       onSubmit={(values) => {
-        console.log(values);
         props.setAddUserModalVisible(false);
+        if (values.name && values.phone) {
+          // Create conductor
+          Api.post(`/conductors`, values)
+          .then(data => {
+            showMessage({message: data.message, type: 'success'});
+          })
+          .catch(error => { 
+            showMessage({message: error.message, type: 'danger'});
+          });
+        }
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <VStack spacing={15}>
           <TextInput
-            label="Username"
+            label="Full Name"
             variant="standard"
             style={{ fontSize: 20 }}
-            onChangeText={handleChange('username')}
-            onBlur={handleBlur('username')}
-            value={values.username}
+            onChangeText={handleChange('name')}
+            onBlur={handleBlur('name')}
+            value={values.name}
           />
           <TextInput
-            label="Phone Number*"
+            label="Phone Number"
             variant="standard"
             style={{ fontSize: 20 }}
             onChangeText={handleChange('phone')}
@@ -60,9 +69,7 @@ function FormInput(props) {
               title="Cancel"
               variant="outlined"
               style={{ width: "40%", marginLeft: 10 }}
-              onPress={() => {
-                props.setAddUserModalVisible(false);
-              }}
+              onPress={() => props.setAddUserModalVisible(false)}
             />
             <Button
               title="Save"
