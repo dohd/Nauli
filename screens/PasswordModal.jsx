@@ -32,7 +32,6 @@ function FormInput(props) {
     <Formik
       initialValues={{ password: "", username: "" }}
       onSubmit={(values) => {
-        console.log(values);
         props.setPasswordModalVisible(false);
       }}
     >

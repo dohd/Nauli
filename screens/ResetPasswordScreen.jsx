@@ -13,7 +13,6 @@ export default function ResetPasswordScreen({ navigation }) {
       <Formik
         initialValues={{ password: "" }}
         onSubmit={(values) => {
-          console.log(values);
           setLoaderVisible(true);
           // api call
           setTimeout(() => {

@@ -47,7 +47,6 @@ export default function WithdrawScreen({ navigation, route }) {
           <Formik
             initialValues={{ username: "", phone: "" }}
             onSubmit={(values) => {
-              console.log(values);
               setLoaderVisible(true);
               // api call
               setTimeout(() => {

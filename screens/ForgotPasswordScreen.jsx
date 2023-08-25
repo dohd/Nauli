@@ -13,7 +13,6 @@ export default function ForgotPasswordScreen({ navigation }) {
       <Formik
         initialValues={{ username: "" }}
         onSubmit={(values) => {
-          console.log(values);
           setLoaderVisible(true);
           // api call
           setTimeout(() => {

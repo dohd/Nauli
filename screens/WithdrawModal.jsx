@@ -52,7 +52,6 @@ function FormInput(props) {
         <Formik
           initialValues={{ withdraw_amount: "" }}
           onSubmit={(values) => {
-            // console.log(values)
             amount = accounting.unformat(values.withdraw_amount);
             accountBalance = accounting.unformat(props.accountBalance);
             if (amount > 0 && amount <= accountBalance) {

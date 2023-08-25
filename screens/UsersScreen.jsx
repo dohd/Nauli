@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, SafeAreaView, FlatList, Pressable} from "react-native";
 import {
   AppBar,
@@ -7,6 +7,8 @@ import {
   Switch,
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { showMessage } from "react-native-flash-message";
+import Api, { fetchAud } from "../api/config";
 
 import { AddUserModal } from "./AddUserModal";
 import { EditUserModal } from "./EditUserModal";
@@ -14,6 +16,20 @@ import { EditUserModal } from "./EditUserModal";
 export default function UsersScreen({navigation, route}) {
   const [addUserModalVisible, setAddUserModalVisible] = useState(false);
   const [editUserModalVisible, setEditUserModalVisible] = useState(false);
+  const [user, setUser] = useState({});
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    // fetch users
+    const aud = fetchAud();
+    Api.get(`/users/${aud}/conductors`)
+    .then(data => {
+      setUsers(data);
+    })
+    .catch(error => { 
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, [addUserModalVisible, editUserModalVisible]); 
+
   return (
     <>
       <AppBar
@@ -30,44 +46,18 @@ export default function UsersScreen({navigation, route}) {
         <SafeAreaView>
           <FlatList
             data={
-            [
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider",
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider",
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider",
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider",
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider",
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider",
-            ]
-            .map((v, i) => ({id: i, value: v}))
-          }
+              users.map(v => ({
+                id: v.id,
+                name: v.name,
+                phone: v.phone,
+                active: v.active
+              }))
+            }
             renderItem={({item}) => (
               <User 
-                id={item.id} 
-                value={item.value} 
+                {...item}
+                user={user}
+                setUser={setUser}
                 editUserModalVisible={editUserModalVisible} 
                 setEditUserModalVisible={setEditUserModalVisible} 
               />
@@ -78,9 +68,8 @@ export default function UsersScreen({navigation, route}) {
       </View> 
 
       <AddUserModal addUserModalVisible={addUserModalVisible} setAddUserModalVisible={setAddUserModalVisible} />
-      <EditUserModal editUserModalVisible={editUserModalVisible} setEditUserModalVisible={setEditUserModalVisible} />
-      <Pressable 
-        style={styles.container} 
+      <EditUserModal editUserModalVisible={editUserModalVisible} setEditUserModalVisible={setEditUserModalVisible} user={user} />
+      <Pressable style={styles.container} 
         onPress={() => setAddUserModalVisible(true)}
       >
         <Icon name="plus" size={24} color="white" />
@@ -89,21 +78,35 @@ export default function UsersScreen({navigation, route}) {
   );
 }
 
-function User({id, value, setEditUserModalVisible}) {
+function User(props) {
+  const [status, setStatus] = useState(Boolean(props.active));
+  const onStatusChange = (state) => {
+    // update user status
+    Api.post(`/conductors/status`, {user_id: props.id, status: state? 1: 0})
+    .then(data => {
+      showMessage({message: data.message, type: 'success'});
+      setStatus(!status);
+    })
+    .catch(error => { 
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }
+
   return (
     <ListItem
-      title={value}
-      secondaryText={'07' + Math.random().toString().slice(2, 10)}
+      title={props.name}
+      secondaryText={props.phone}
       leading={<Icon name="account-circle" size={24} />}
-      trailing={(props) => (
+      trailing={(trailingProps) => (
         <IconButton
-          icon={(props) => <Switch value={id % 2 == 0? true : false} onValueChange={() => null} />}
-          {...props}
+          icon={(iconProps) => <Switch value={status} onValueChange={(state) => onStatusChange(state)} />}
+          {...trailingProps}
           style={{ marginRight: 10 }}
         />
       )}
       onPress={() => {
-        setEditUserModalVisible(true);
+        props.setUser({id: props.id, name: props.name, phone: props.phone});
+        props.setEditUserModalVisible(true);
       }}
     />
   );
