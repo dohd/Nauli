@@ -1,88 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, SafeAreaView, FlatList } from "react-native";
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import accounting from "accounting-js";
+import Api, { fetchAud } from "../api/config";
 
-export default function WithdrawHistory({ navigation, route }) {
+export default function WithdrawHistory({navigation, route}) {
+  const [withdrawals, setWithdrawals] = useState([]);
+  useEffect(() => {
+    // fetch cashouts
+    const aud = fetchAud();
+    Api.get(`/users/${aud}/cashouts`)
+    .then(data => {
+      setWithdrawals(data);
+    })
+    .catch(error => { 
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, []); 
+
   return (
       <SafeAreaView style={{ marginTop: 5 }}>
         <FlatList
           data={
-          [
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-          ]
-          .map((v, i) => ({id: i, value: v}))
+            withdrawals.map(v => ({
+              id: v.id,
+              date: new Date(v.created_at).toLocaleDateString("es-CL"),
+              time: new Date(v.created_at).toLocaleTimeString(),
+              amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+            }))
         }
-          renderItem={({item}) => <Transaction id={item.id} value={item.value} />}
+          renderItem={({item}) => <Transaction {...item} />}
           keyExtractor={item => item.id}
         />
       </SafeAreaView>
   );
 }
 
-function Transaction({id, value}) {
+function Transaction(props) {
   return (
-    <View style={styles.mainCardView} key={id}>
+    <View style={styles.mainCardView} key={props.id}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View style={styles.subCardView}>
           <Icon name="cash-multiple" size={30} />
         </View>
           <View style={{ marginLeft: 8 }}>
             <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>
-              {(new Date()).toLocaleDateString()}
+              {props.date}
             </Text>
             <Text variant="subtitle2" color="gray">
-              07:{id < 10 ? `0${id + 1}` : id} AM
+              {props.time}
             </Text>
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View style={{ marginLeft: 8 }}>
-          <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. 100</Text>
+          <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. {props.amount}</Text>
         </View>
       </View>
     </View>

@@ -1,106 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, SafeAreaView, FlatList } from "react-native";
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import accounting from "accounting-js";
+import Api, { fetchAud } from "../api/config";
 
-export default function FareHistory({ navigation, route }) {
+export default function FareHistory({navigation, route}) {
+  const [deposits, setDeposits] = useState([]);
+  useEffect(() => {
+    const aud = fetchAud();
+    // fetch deposits
+    Api.get(`/users/${aud}/deposits`)
+    .then(data => {
+      setDeposits(data);
+    })
+    .catch(error => { 
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, []); 
+
   return (
       <SafeAreaView style={{ marginTop: 5 }}>
         <FlatList
           data={
-          [
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-            "Fuxi Isak",
-            "Lola Azra",
-            "Sujata Devyn",
-            "Ida Roman",
-            "Sherry Argider",
-          ]
-          .map((v, i) => ({id: i, value: v}))
+            deposits.map(v => ({
+              id: v.id,
+              name: `${v.first_name} ${v.middle_name}`,
+              phone: v.msisdn,
+              amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+              time: new Date(v.created_at).toLocaleTimeString(),
+            }))
         }
-          renderItem={({item}) => <Transaction id={item.id} value={item.value} />}
+          renderItem={({item}) => <Transaction {...item} />}
           keyExtractor={item => item.id}
         />
       </SafeAreaView>
   );
 }
 
-function Transaction({id, value}) {
+function Transaction(props) {
   return (
-    <View style={styles.mainCardView} key={id}>
+    <View style={styles.mainCardView} key={props.id}>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View style={styles.subCardView}>
           <Icon name="cash-multiple" size={30} />
         </View>
         <View style={{ marginLeft: 8 }}>
-          <Text variant="subtitle2">{value}</Text>
+          <Text variant="subtitle2">{props.name}</Text>
           <View style={{ marginTop: 4, borderWidth: 0 }}>
             <Text variant="subtitle2" color="gray">
-              07{Math.random().toString().slice(2, 10)}
+              {props.phone}
             </Text>
           </View>
         </View>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <View style={{ marginLeft: 8 }}>
-          <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. 100</Text>
+          <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. {props.amount}</Text>
           <View style={{ marginTop: 4, borderWidth: 0 }}>
             <Text variant="subtitle2" color="gray">
-              07:{id < 10 ? `0${id + 1}` : id} AM
+              {props.time}
             </Text>
           </View>
         </View>

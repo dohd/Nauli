@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import {
   Backdrop,
@@ -12,17 +12,36 @@ import {
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
+import Api, { fetchAud } from "../api/config";
 
-import {WithdrawModal} from "./WithdrawModal";
-
+import { WithdrawModal } from "./WithdrawModal";
 
 export default function HomeScreen(props) {
   const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
-  props = {withdrawModalVisible, setWithdrawModalVisible, ...props};
+  const [accountBalance, setAccountBalance] = useState(0);
+  const [deposits, setDeposits] = useState([]);
+  props = {withdrawModalVisible, setWithdrawModalVisible, accountBalance, ...props};
 
-  // fetch available balance
-  let accountBalance = 25000;
-  props.accountBalance = accounting.formatNumber(accounting.unformat(accountBalance));
+  useEffect(() => {
+    const aud = fetchAud();
+    // fetch account balance
+    Api.get(`/users/${aud}/balance`)
+    .then(data => {
+      const balance = accounting.formatNumber(data.net_balance)
+      setAccountBalance(balance);
+    })
+    .catch(error => { 
+      showMessage({message: error.message, type: 'danger'});
+    });
+    // fetch deposits
+    Api.get(`/users/${aud}/deposits`)
+    .then(data => {
+      setDeposits(data);
+    })
+    .catch(error => { 
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, []);  
 
   return (
     <>
@@ -58,16 +77,15 @@ export default function HomeScreen(props) {
         <SafeAreaView>
           <FlatList
             data={
-            [
-              "Fuxi Isak",
-              "Lola Azra",
-              "Sujata Devyn",
-              "Ida Roman",
-              "Sherry Argider"
-            ]
-            .map((v, i) => ({id: i, value: v}))
-          }
-            renderItem={({item}) => <FareDeposit id={item.id} value={item.value} />}
+              deposits.map(v => ({
+                id: v.id,
+                name: `${v.first_name} ${v.middle_name}`,
+                phone: v.msisdn,
+                amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+                time: new Date(v.created_at).toLocaleTimeString(),
+              }))
+            }
+            renderItem={({item}) => <FareDeposit {...item} />}
             keyExtractor={item => item.id}
           />
           <Spacer />
@@ -127,29 +145,29 @@ function AvailableBalance(props) {
   );
 }
 
-function FareDeposit({id, value}) {
+function FareDeposit(props) {
   return (
-    <View key={id}>
+    <View key={props.id}>
       <View style={styles.listItemView} key={0}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={styles.subCardView}>
             <Icon name="cash-multiple" size={30} />
           </View>
           <View style={{ marginLeft: 8 }}>
-            <Text variant="subtitle2">{value}</Text>
+            <Text variant="subtitle2">{props.name}</Text>
             <View style={{ marginTop: 4, borderWidth: 0 }}>
               <Text variant="subtitle2" color="gray">
-                07{Math.random().toString().slice(2, 10)}
+                {props.phone}
               </Text>
             </View>
           </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ marginLeft: 8 }}>
-            <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. 100</Text>
+            <Text variant="subtitle2" style={{ fontWeight: 'bold' }}>Ksh. {props.amount}</Text>
             <View style={{ marginTop: 4, borderWidth: 0 }}>
               <Text variant="subtitle2" color="gray">
-                07:0{id + 1} AM
+                {props.time}
               </Text>
             </View>
           </View>
