@@ -2,6 +2,8 @@ import React from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, Text, TextInput, HStack, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
+import { showMessage } from "react-native-flash-message";
+import Api from "../api/config";
 
 export function EditUserModal(props) {
   return (
@@ -10,9 +12,7 @@ export function EditUserModal(props) {
         animationType="fade"
         transparent={true}
         visible={props.editUserModalVisible}
-        onRequestClose={() => {
-          props.setEditUserModalVisible(false);
-        }}
+        onRequestClose={() => props.setEditUserModalVisible(false)}
       >
         <View style={styles.centeredView}>
           <View style={styles.mainCardView}>
@@ -28,26 +28,36 @@ export function EditUserModal(props) {
 }
 
 function FormInput(props) {
+  const {user} = props;
   return (
     <Formik
-      initialValues={{ username: "", phone:"" }}
+      initialValues={{ name: user.name, phone: user.phone }}
       onSubmit={(values) => {
-        console.log(values);
         props.setEditUserModalVisible(false);
+        if (values.name && values.phone) {
+          // Edit conductor
+          Api.patch(`/conductors/${user.id}`, values)
+          .then(data => {
+            showMessage({message: data.message, type: 'success'});
+          })
+          .catch(error => { 
+            showMessage({message: error.message, type: 'danger'});
+          });
+        }
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <VStack spacing={15}>
           <TextInput
-            label="Username"
+            label="Full Name"
             variant="standard"
             style={{ fontSize: 20 }}
-            onChangeText={handleChange('username')}
-            onBlur={handleBlur('username')}
-            value={values.username}
+            onChangeText={handleChange('name')}
+            onBlur={handleBlur('name')}
+            value={values.name}
           />
           <TextInput
-            label="Phone Number*"
+            label="Phone Number"
             variant="standard"
             style={{ fontSize: 20 }}
             onChangeText={handleChange('phone')}
@@ -60,18 +70,13 @@ function FormInput(props) {
               title="Cancel"
               variant="outlined"
               style={{ width: "40%", marginLeft: 10 }}
-              onPress={() => {
-                props.setEditUserModalVisible(false);
-              }}
+              onPress={() => props.setEditUserModalVisible(false)}
             />
             <Button
               title="Save"
               style={{ width: "40%" }}
-              onPress={() => {
-                handleSubmit();
-              }}
+              onPress={() => handleSubmit()}
             />
-
           </HStack>
         </VStack>
       )}
