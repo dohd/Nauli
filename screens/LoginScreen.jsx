@@ -9,7 +9,7 @@ import Api from "../api/config";
 
 export default function LoginScreen({ navigation }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
-
+  
   return (
     <View style={styles.container}>
       <Text variant="h4" style={{ fontWeight: "bold", marginBottom: 20 }}>
@@ -18,12 +18,13 @@ export default function LoginScreen({ navigation }) {
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={(values) => {
-          setLoaderVisible(true);          
+          setLoaderVisible(true);
           // fetch access token
           Api.post('/login', values)
           .then(data => {
             setLoaderVisible(false);
             SyncStorage.set('accessToken', data.token);
+            SyncStorage.set('aud', data.aud);
             navigation.navigate("Home");
           })
           .catch(error => { 
