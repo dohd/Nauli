@@ -1,9 +1,11 @@
 import axios from "axios";
 import SyncStorage from 'sync-storage';
 
-// set reverse proxy for localhost access before starting local server
-// i.e adb reverse tcp:8000 tcp:8000
+export const fetchAud = () => SyncStorage.get('aud');
 
+
+// In Development mode set reverse proxy for localhost access 
+//before starting local server i.e adb reverse tcp:8000 tcp:8000
 const Api = axios.create({
     baseURL: 'http://localhost:8000/api',
     withCredentials: true,
