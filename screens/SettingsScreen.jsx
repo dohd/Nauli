@@ -4,6 +4,7 @@ import { AppBar, ListItem, IconButton, VStack } from "@react-native-material/cor
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { showMessage } from "react-native-flash-message";
 import Api, { fetchAud } from "../api/config";
+import SyncStorage from "sync-storage";
 
 import { PasswordModal } from "./PasswordModal";
 import { PhoneModal } from './PhoneModal';
@@ -26,6 +27,21 @@ export default function SettingsScreen({ navigation, route }) {
       showMessage({message: error.message, type: 'danger'});
     });
   }, [passwordModalVisible, usernameModalVisible, phoneModalVisible]);
+
+  const handleLogout = () => {
+    navigation.navigate("Login");
+    navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+    // logout user
+    Api.post(`/logout`)
+    .then(data => {
+      SyncStorage.remove('accessToken');
+      SyncStorage.remove('aud');
+      return data;
+    })
+    .catch(error => {
+      showMessage({message: error.message, type: 'danger'});
+    });
+  };
 
   return (
     <>
@@ -76,10 +92,7 @@ export default function SettingsScreen({ navigation, route }) {
             title="Logout"
             secondaryText="End Session"
             leading={<Icon name="logout-variant" size={24} />}
-            onPress={() => {
-              navigation.navigate("Login");
-              navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-            }}
+            onPress={() => handleLogout()}
           />    
 
           <UsernameModal user={user} usernameModalVisible={usernameModalVisible} setUsernameModalVisible={setUsernameModalVisible} />      
