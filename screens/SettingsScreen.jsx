@@ -3,8 +3,8 @@ import { View, StyleSheet } from "react-native";
 import { AppBar, ListItem, IconButton, VStack } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { showMessage } from "react-native-flash-message";
-import Api, { fetchAud } from "../api/config";
 import SyncStorage from "sync-storage";
+import Api, { fetchAud } from "../api/config";
 
 import { PasswordModal } from "./PasswordModal";
 import { PhoneModal } from './PhoneModal';
@@ -31,11 +31,11 @@ export default function SettingsScreen({ navigation, route }) {
   const handleLogout = () => {
     navigation.navigate("Login");
     navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+    SyncStorage.remove('aud');
     // logout user
     Api.post(`/logout`)
     .then(data => {
       SyncStorage.remove('accessToken');
-      SyncStorage.remove('aud');
       return data;
     })
     .catch(error => {
