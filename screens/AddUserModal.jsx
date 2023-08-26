@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, Text, TextInput, HStack, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
+import * as Yup from 'yup';
 import { showMessage } from "react-native-flash-message";
 import Api from "../api/config";
 
@@ -28,24 +29,31 @@ export function AddUserModal(props) {
 }
 
 function FormInput(props) {
+  const UserSchema = Yup.object().shape({
+    name: Yup.string()
+      .required('full name required!'),
+    phone: Yup.string()
+      .min('10', 'number too short!')
+      .required('number required!'),  
+  });
+
   return (
     <Formik
       initialValues={{ name: "", phone:"" }}
+      validationSchema={UserSchema}
       onSubmit={(values) => {
         props.setAddUserModalVisible(false);
-        if (values.name && values.phone) {
-          // Create conductor
-          Api.post(`/conductors`, values)
-          .then(data => {
-            showMessage({message: data.message, type: 'success'});
-          })
-          .catch(error => { 
-            showMessage({message: error.message, type: 'danger'});
-          });
-        }
+        // Create user
+        Api.post(`/conductors`, values)
+        .then(data => {
+          showMessage({message: data.message, type: 'success'});
+        })
+        .catch(error => { 
+          showMessage({message: error.message, type: 'danger'});
+        });
       }}
     >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
+      {({ handleChange, handleBlur, handleSubmit, errors, touched, values }) => (
         <VStack spacing={15}>
           <TextInput
             label="Full Name"
@@ -55,6 +63,7 @@ function FormInput(props) {
             onBlur={handleBlur('name')}
             value={values.name}
           />
+          {errors.name && touched.name ? (<Text variant="subtitle1" color="red">{errors.name}</Text>) : null}
           <TextInput
             label="Phone Number"
             variant="standard"
@@ -63,7 +72,7 @@ function FormInput(props) {
             onBlur={handleBlur('phone')}
             value={values.phone}
           />
-
+          {errors.phone && touched.phone ? (<Text variant="subtitle1" color="red">{errors.phone}</Text>) : null}
           <HStack spacing={40} style={{ marginTop: 30 }}>
             <Button
               title="Cancel"
@@ -74,11 +83,8 @@ function FormInput(props) {
             <Button
               title="Save"
               style={{ width: "40%" }}
-              onPress={() => {
-                handleSubmit();
-              }}
+              onPress={() => handleSubmit()}
             />
-
           </HStack>
         </VStack>
       )}
@@ -88,7 +94,7 @@ function FormInput(props) {
 
 const styles = StyleSheet.create({
   mainCardView: {
-    height: 300,
+    minHeight: 300,
     backgroundColor: "white",
     borderRadius: 15,
     shadowOffset: { width: 0, height: 0 },

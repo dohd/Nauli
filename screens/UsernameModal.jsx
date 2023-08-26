@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, Text, TextInput, HStack, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
+import * as Yup from 'yup';
 import { showMessage } from "react-native-flash-message";
 import Api from "../api/config";
 
@@ -29,24 +30,28 @@ export function UsernameModal(props) {
 
 function FormInput(props) {
   const {user} = props;
+  const UsernameSchema = Yup.object().shape({
+    username: Yup.string()
+      .required('username required!'),
+  });
+
   return (
     <Formik
       initialValues={{ username: user.username }}
+      validationSchema={UsernameSchema}
       onSubmit={(values) => {
         props.setUsernameModalVisible(false);
-        if (values.username) {
-          // update username
-          Api.patch(`/users/${user.id}`, values)
-          .then(data => {
-            return data;
-          })
-          .catch(error => {
-            showMessage({message: error.message, type: 'danger'});
-          });
-        }
+        // update username
+        Api.patch(`/users/${user.id}`, values)
+        .then(data => {
+          return data;
+        })
+        .catch(error => {
+          showMessage({message: error.message, type: 'danger'});
+        });
       }}
     >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
+      {({ handleChange, handleBlur, handleSubmit, errors, touched, values }) => (
         <VStack spacing={20}>
           <TextInput
             label="Username"
@@ -56,7 +61,7 @@ function FormInput(props) {
             onBlur={handleBlur('username')}
             value={values.username}
           />
-        
+          {errors.username && touched.username ? (<Text variant="subtitle1" color="red">{errors.username}</Text>) : null}
           <HStack spacing={40} style={{ marginTop: 40 }}>
             <Button
               title="Cancel"
