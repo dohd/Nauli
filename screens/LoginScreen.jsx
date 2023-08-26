@@ -4,7 +4,6 @@ import { Button, TextInput, VStack, Text, ActivityIndicator } from "@react-nativ
 import { Formik } from "formik";
 import SyncStorage from 'sync-storage';
 import { showMessage } from "react-native-flash-message";
-
 import Api from "../api/config";
 
 export default function LoginScreen({ navigation }) {

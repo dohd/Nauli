@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import { Button, Text, TextInput, HStack, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
+import { showMessage } from "react-native-flash-message";
+import Api from "../api/config";
 
 export function UsernameModal(props) {
   return (
@@ -10,9 +12,7 @@ export function UsernameModal(props) {
         animationType="fade"
         transparent={true}
         visible={props.usernameModalVisible}
-        onRequestClose={() => {
-          props.setUsernameModalVisible(false);
-        }}
+        onRequestClose={() => props.setUsernameModalVisible(false)}
       >
         <View style={styles.centeredView}>
           <View style={styles.mainCardView}>
@@ -28,10 +28,23 @@ export function UsernameModal(props) {
 }
 
 function FormInput(props) {
+  const {user} = props;
   return (
     <Formik
-      initialValues={{ password: "", username: "" }}
-      onSubmit={(values) => console.log(values)}
+      initialValues={{ username: user.username }}
+      onSubmit={(values) => {
+        props.setUsernameModalVisible(false);
+        if (values.username) {
+          // update username
+          Api.patch(`/users/${user.id}`, values)
+          .then(data => {
+            return data;
+          })
+          .catch(error => {
+            showMessage({message: error.message, type: 'danger'});
+          });
+        }
+      }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
         <VStack spacing={20}>
@@ -39,9 +52,9 @@ function FormInput(props) {
             label="Username"
             variant="standard"
             style={{ fontSize: 20 }}
-            // onChangeText={handleChange('password')}
-            // onBlur={handleBlur('password')}
-            // value={values.password}
+            onChangeText={handleChange('username')}
+            onBlur={handleBlur('username')}
+            value={values.username}
           />
         
           <HStack spacing={40} style={{ marginTop: 40 }}>
@@ -49,22 +62,13 @@ function FormInput(props) {
               title="Cancel"
               variant="outlined"
               style={{ width: "40%", marginLeft: 10 }}
-              onPress={() => {
-                // handleSubmit();
-                props.setUsernameModalVisible(false);
-                // props.navigation.navigate("Settings");
-              }}
+              onPress={() => props.setUsernameModalVisible(false)}
             />
             <Button
               title="Save"
               style={{ width: "40%" }}
-              onPress={() => {
-                // handleSubmit();
-                props.setUsernameModalVisible(false);
-                // props.navigation.navigate("Settings");
-              }}
+              onPress={() => handleSubmit()}
             />
-
           </HStack>
         </VStack>
       )}

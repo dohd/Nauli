@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { View, StyleSheet } from "react-native";
 import { AppBar, ListItem, IconButton, VStack } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { showMessage } from "react-native-flash-message";
+import Api, { fetchAud } from "../api/config";
 
 import { PasswordModal } from "./PasswordModal";
 import { PhoneModal } from './PhoneModal';
@@ -11,6 +13,20 @@ export default function SettingsScreen({ navigation, route }) {
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
   const [phoneModalVisible, setPhoneModalVisible] = useState(false);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    // fetch user 
+    const aud = fetchAud();
+    Api.get(`/users/${aud}`)
+    .then(data => {
+      setUser(data);
+    })
+    .catch(error => {
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, [passwordModalVisible, usernameModalVisible, phoneModalVisible]);
+
   return (
     <>
       <AppBar
@@ -31,37 +47,29 @@ export default function SettingsScreen({ navigation, route }) {
             secondaryText="Add or Disable User"
             leading={<Icon name="account-multiple-plus" size={24} />}
             trailing={(props) => <Icon name="chevron-right" {...props} />}
-            onPress={() => {
-              navigation.navigate('Users');
-            }}
+            onPress={() => navigation.navigate('Users')}
           />
           
           <ListItem
             title="Username"
-            secondaryText="Super Admin"
+            secondaryText={user.username || '_'}
             leading={<Icon name="account-circle" size={24} />}
             trailing={(props) => <Icon name="chevron-right" {...props} />}
-            onPress={() => {
-              setUsernameModalVisible(true);
-            }}
+            onPress={() => setUsernameModalVisible(true)}
           />
           <ListItem
             title="Phone Number"
-            secondaryText="0788222400"
+            secondaryText={user.phone || '_'}
             leading={<Icon name="phone" size={24} />}
             trailing={(props) => <Icon name="chevron-right" {...props} />}
-            onPress={() => {
-              setPhoneModalVisible(true);
-            }}
+            onPress={() => setPhoneModalVisible(true)}
           />
           <ListItem
             title="Password"
             secondaryText="******"
             leading={<Icon name="lock" size={24} />}
             trailing={(props) => <Icon name="chevron-right" {...props} />}
-            onPress={() => {
-              setPasswordModalVisible(true);
-            }}
+            onPress={() => setPasswordModalVisible(true)}
           />
           
           <ListItem
@@ -74,9 +82,9 @@ export default function SettingsScreen({ navigation, route }) {
             }}
           />    
 
-          <UsernameModal usernameModalVisible={usernameModalVisible} setUsernameModalVisible={setUsernameModalVisible} />      
-          <PhoneModal phoneModalVisible={phoneModalVisible} setPhoneModalVisible={setPhoneModalVisible} />      
-          <PasswordModal passwordModalVisible={passwordModalVisible} setPasswordModalVisible={setPasswordModalVisible} />      
+          <UsernameModal user={user} usernameModalVisible={usernameModalVisible} setUsernameModalVisible={setUsernameModalVisible} />      
+          <PhoneModal user={user} phoneModalVisible={phoneModalVisible} setPhoneModalVisible={setPhoneModalVisible} />      
+          <PasswordModal user={user} passwordModalVisible={passwordModalVisible} setPasswordModalVisible={setPasswordModalVisible} />      
         </VStack>
       </View>
     </>

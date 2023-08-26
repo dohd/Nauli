@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Modal } from "react-native";
-import { Button, Text, TextInput, Divider, HStack, VStack } from "@react-native-material/core";
+import { Button, Text, TextInput, HStack, VStack } from "@react-native-material/core";
 import { Formik } from "formik";
+import { showMessage } from "react-native-flash-message";
+import Api from "../api/config";
 
 export function PasswordModal(props) {
   return (
@@ -28,11 +30,23 @@ export function PasswordModal(props) {
 }
 
 function FormInput(props) {
+  const {user} = props;
   return (
     <Formik
-      initialValues={{ password: "", username: "" }}
+      initialValues={{ current_password: '', password: '', confirm_password: '' }}
       onSubmit={(values) => {
         props.setPasswordModalVisible(false);
+        const {current_password, password} = values;
+        if (current_password && password) {
+          // update password
+          Api.patch(`/users/${user.id}`, {current_password, password})
+          .then(data => {
+            showMessage({message: 'Password updated successfully', type: 'success'});
+          })
+          .catch(error => {
+            showMessage({message: error.message, type: 'danger'});
+          });
+        }
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values }) => (
@@ -69,16 +83,12 @@ function FormInput(props) {
               title="Cancel"
               variant="outlined"
               style={{ width: "40%", marginLeft: 10 }}
-              onPress={() => {
-                props.setPasswordModalVisible(false);
-              }}
+              onPress={() => props.setPasswordModalVisible(false)}
             />
             <Button
               title="Save"
               style={{ width: "40%" }}
-              onPress={() => {
-                handleSubmit();
-              }}
+              onPress={() => handleSubmit()}
             />
           </HStack>
         </VStack>
