@@ -60,6 +60,7 @@ export default function SettingsScreen({ navigation, route }) {
         <VStack>
           <ListItem
             title="User Management"
+            disabled={Boolean(user.rel_id)}
             secondaryText="Add or Disable User"
             leading={<Icon name="account-multiple-plus" size={24} />}
             trailing={(props) => <Icon name="chevron-right" {...props} />}

@@ -20,10 +20,19 @@ export default function HomeScreen(props) {
   const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
   const [accountBalance, setAccountBalance] = useState(0);
   const [deposits, setDeposits] = useState([]);
-  props = {withdrawModalVisible, setWithdrawModalVisible, accountBalance, ...props};
+  const [user, setUser] = useState({});
+  props = {withdrawModalVisible, setWithdrawModalVisible, user, accountBalance, ...props};
 
   useEffect(() => {
     const aud = fetchAud();
+    // fetch user 
+    Api.get(`/users/${aud}`)
+    .then(data => {
+      setUser(data);
+    })
+    .catch(error => {
+      showMessage({message: error.message, type: 'danger'});
+    });
     // fetch account balance
     Api.get(`/users/${aud}/balance`)
     .then(data => {
@@ -131,12 +140,10 @@ function AvailableBalance(props) {
             />
             <Button
               title="Withdraw"
+              disabled={Boolean(props.user.rel_id)}
               uppercase={false}
               style={{ width: "40%", marginRight: 20 }}
-              onPress={() => {
-                // navigation.navigate("Withdraw")
-                props.setWithdrawModalVisible(true);
-              }}
+              onPress={() => props.setWithdrawModalVisible(true)}
             />
           </View>
         </View>
