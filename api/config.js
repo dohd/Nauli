@@ -16,7 +16,7 @@ const Api = axios.create({
 // Request interceptor
 Api.interceptors.request.use(config => {
     const token = SyncStorage.get('accessToken');
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 }, error => Promise.reject(error));
 
