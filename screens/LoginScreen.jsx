@@ -2,13 +2,20 @@ import React, {useState} from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, VStack, Text, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
+import * as Yup from "yup";
 import SyncStorage from 'sync-storage';
 import { showMessage } from "react-native-flash-message";
 import Api from "../api/config";
 
 export default function LoginScreen({ navigation }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
-  
+  const LoginSchema = Yup.object().shape({
+    username: Yup.string()
+      .required('username / phone required!'),
+    password: Yup.string()
+      .required('password required!'),
+  });
+
   return (
     <View style={styles.container}>
       <Text variant="h4" style={{ fontWeight: "bold", marginBottom: 20 }}>
@@ -16,6 +23,7 @@ export default function LoginScreen({ navigation }) {
       </Text>
       <Formik
         initialValues={{ username: "", password: "" }}
+        validationSchema={LoginSchema}
         onSubmit={(values) => {
           setLoaderVisible(true);
           // fetch access token
@@ -32,7 +40,7 @@ export default function LoginScreen({ navigation }) {
           });
         }}
       >
-        {({ handleChange, handleBlur, handleSubmit, values }) => (
+        {({ handleChange, handleBlur, handleSubmit, errors, touched, values }) => (
           <VStack spacing={20} style={{ minWidth: 280 }}>
             <TextInput
               label="Username / Phone Number"
@@ -41,6 +49,7 @@ export default function LoginScreen({ navigation }) {
               onBlur={handleBlur("username")}
               value={values.username}
             />
+            {errors.username && touched.username ? (<Text variant="subtitle1" color="red">{errors.username}</Text>) : null}
             <TextInput
               label="Password"
               variant="standard"
@@ -48,7 +57,7 @@ export default function LoginScreen({ navigation }) {
               onBlur={handleBlur("password")}
               value={values.password}
             />
-
+            {errors.password && touched.password ? (<Text variant="subtitle1" color="red">{errors.password}</Text>) : null}
             <Button
               title="Login"
               trailing={props => (
@@ -58,9 +67,7 @@ export default function LoginScreen({ navigation }) {
               )}         
               disabled={loaderVisible}
               style={{ marginTop: 20 }}
-              onPress={() => {
-                handleSubmit();
-              }}
+              onPress={() => handleSubmit()}
             />
           </VStack>
         )}
@@ -71,9 +78,7 @@ export default function LoginScreen({ navigation }) {
         uppercase={false}
         variant="text"
         style={{ marginTop: 15 }}
-        onPress={() => {
-          navigation.navigate("ForgotPassword");
-        }}
+        onPress={() => navigation.navigate("ForgotPassword")}
       />
 
       <View style={{ flexDirection: 'row', marginTop: 30 }}>
@@ -81,9 +86,7 @@ export default function LoginScreen({ navigation }) {
         <Button
           title="SignUp"
           variant="text"
-          onPress={() => {
-            navigation.navigate("Signup");
-          }}
+          onPress={() => navigation.navigate("Signup")}
         />
       </View>
     </View>
