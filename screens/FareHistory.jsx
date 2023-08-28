@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, SafeAreaView, FlatList } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl } from "react-native";
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
@@ -19,9 +19,27 @@ export default function FareHistory({navigation, route}) {
     });
   }, []); 
 
+  // refresh control
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // fetch deposits
+    const aud = fetchAud();
+    Api.get(`/users/${aud}/deposits`)
+    .then(data => {
+      setRefreshing(false);
+      setDeposits(data);
+    })
+    .catch(error => { 
+      setRefreshing(false);
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, []);
+
   return (
       <SafeAreaView style={{ marginTop: 5 }}>
         <FlatList
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           data={
             deposits.map(v => ({
               id: v.id,

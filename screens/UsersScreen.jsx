@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList, Pressable} from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet, SafeAreaView, FlatList, Pressable, RefreshControl} from "react-native";
 import {
   AppBar,
   IconButton,
@@ -30,6 +30,22 @@ export default function UsersScreen({navigation, route}) {
     });
   }, [addUserModalVisible, editUserModalVisible]); 
 
+  // refresh control
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    const aud = fetchAud();
+    Api.get(`/users/${aud}/conductors`)
+    .then(data => {
+      setRefreshing(false);
+      setUsers(data);
+    })
+    .catch(error => { 
+      setRefreshing(false);
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, []);
+
   return (
     <>
       <AppBar
@@ -45,6 +61,7 @@ export default function UsersScreen({navigation, route}) {
       <View style={styles.mainCardView}>
         <SafeAreaView>
           <FlatList
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             data={
               users.map(v => ({
                 id: v.id,
@@ -69,9 +86,7 @@ export default function UsersScreen({navigation, route}) {
 
       <AddUserModal addUserModalVisible={addUserModalVisible} setAddUserModalVisible={setAddUserModalVisible} />
       <EditUserModal editUserModalVisible={editUserModalVisible} setEditUserModalVisible={setEditUserModalVisible} user={user} />
-      <Pressable style={styles.container} 
-        onPress={() => setAddUserModalVisible(true)}
-      >
+      <Pressable style={styles.container} onPress={() => setAddUserModalVisible(true)}>
         <Icon name="plus" size={24} color="white" />
       </Pressable>
     </>

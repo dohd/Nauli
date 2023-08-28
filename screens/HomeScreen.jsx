@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, StyleSheet, SafeAreaView, FlatList, RefreshControl } from "react-native";
 import {
   Backdrop,
   BackdropSubheader,
@@ -52,6 +52,23 @@ export default function HomeScreen(props) {
     });
   }, []);  
 
+  // refresh control
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    // fetch deposits
+    const aud = fetchAud();
+    Api.get(`/users/${aud}/deposits`)
+    .then(data => {
+      setRefreshing(false);
+      setDeposits(data);
+    })
+    .catch(error => { 
+      setRefreshing(false);
+      showMessage({message: error.message, type: 'danger'});
+    });
+  }, []);
+
   return (
     <>
       <Backdrop
@@ -85,6 +102,7 @@ export default function HomeScreen(props) {
         {/* Deposit list */}
         <SafeAreaView>
           <FlatList
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             data={
               deposits.map(v => ({
                 id: v.id,
@@ -96,7 +114,7 @@ export default function HomeScreen(props) {
             }
             renderItem={({item}) => <FareDeposit {...item} />}
             keyExtractor={item => item.id}
-          />
+          />  
           <Spacer />
         </SafeAreaView>
       </Backdrop>
