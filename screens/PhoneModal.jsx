@@ -46,7 +46,7 @@ function FormInput(props) {
         // update phone number
         Api.patch(`/users/${user.id}`, values)
         .then(data => {
-          return data;
+          props.setUserUpdated(!props.userUpdated);
         })
         .catch(error => {
           showMessage({message: error.message, type: 'danger'});

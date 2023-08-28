@@ -52,6 +52,7 @@ function FormInput(props) {
         // update password
         Api.patch(`/users/${user.id}`, {current_password, password})
         .then(data => {
+          props.setUserUpdated(!props.userUpdated);
           showMessage({message: 'Password updated successfully', type: 'success'});
         })
         .catch(error => {

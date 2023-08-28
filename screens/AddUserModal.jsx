@@ -43,9 +43,10 @@ function FormInput(props) {
       validationSchema={UserSchema}
       onSubmit={(values) => {
         props.setAddUserModalVisible(false);
-        // Create user
+        // add user
         Api.post(`/conductors`, values)
         .then(data => {
+          props.setUserUpdated(!props.userUpdated);
           showMessage({message: data.message, type: 'success'});
         })
         .catch(error => { 

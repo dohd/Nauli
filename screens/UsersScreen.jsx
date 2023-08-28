@@ -17,6 +17,8 @@ export default function UsersScreen({navigation, route}) {
   const [addUserModalVisible, setAddUserModalVisible] = useState(false);
   const [editUserModalVisible, setEditUserModalVisible] = useState(false);
   const [user, setUser] = useState({});
+  const [userUpdated, setUserUpdated] = useState(false);
+
   const [users, setUsers] = useState([]);
   useEffect(() => {
     // fetch users
@@ -28,7 +30,7 @@ export default function UsersScreen({navigation, route}) {
     .catch(error => { 
       showMessage({message: error.message, type: 'danger'});
     });
-  }, [addUserModalVisible, editUserModalVisible]); 
+  }, [userUpdated]); 
 
   // refresh control
   const [refreshing, setRefreshing] = useState(false);
@@ -84,8 +86,8 @@ export default function UsersScreen({navigation, route}) {
         </SafeAreaView>
       </View> 
 
-      <AddUserModal addUserModalVisible={addUserModalVisible} setAddUserModalVisible={setAddUserModalVisible} />
-      <EditUserModal editUserModalVisible={editUserModalVisible} setEditUserModalVisible={setEditUserModalVisible} user={user} />
+      <AddUserModal userUpdated={userUpdated} setUserUpdated={setUserUpdated} addUserModalVisible={addUserModalVisible} setAddUserModalVisible={setAddUserModalVisible} />
+      <EditUserModal userUpdated={userUpdated} setUserUpdated={setUserUpdated} editUserModalVisible={editUserModalVisible} setEditUserModalVisible={setEditUserModalVisible} user={user} />
       <Pressable style={styles.container} onPress={() => setAddUserModalVisible(true)}>
         <Icon name="plus" size={24} color="white" />
       </Pressable>
@@ -94,13 +96,12 @@ export default function UsersScreen({navigation, route}) {
 }
 
 function User(props) {
-  const [status, setStatus] = useState(Boolean(props.active));
-  const onStatusChange = (state) => {
+  const [switchValue, setSwitchValue] = useState(Boolean(props.active));
+  const onSwitchValueChange = (value) => {
     // update user status
-    Api.post(`/conductors/status`, {user_id: props.id, status: state? 1: 0})
+    Api.post(`/conductors/status`, {user_id: props.id, status: value? 1: 0})
     .then(data => {
-      showMessage({message: data.message, type: 'success'});
-      setStatus(!status);
+      setSwitchValue(!switchValue);
     })
     .catch(error => { 
       showMessage({message: error.message, type: 'danger'});
@@ -114,9 +115,9 @@ function User(props) {
       leading={<Icon name="account-circle" size={24} />}
       trailing={(trailingProps) => (
         <IconButton
-          icon={(iconProps) => <Switch value={status} onValueChange={(state) => onStatusChange(state)} />}
-          {...trailingProps}
+          icon={(iconProps) => <Switch value={switchValue} onValueChange={(value) => onSwitchValueChange(value)} />}
           style={{ marginRight: 10 }}
+          {...trailingProps}
         />
       )}
       onPress={() => {

@@ -14,8 +14,9 @@ export default function SettingsScreen({ navigation, route }) {
   const [passwordModalVisible, setPasswordModalVisible] = useState(false);
   const [usernameModalVisible, setUsernameModalVisible] = useState(false);
   const [phoneModalVisible, setPhoneModalVisible] = useState(false);
-  const [user, setUser] = useState({});
+  const [userUpdated, setUserUpdated] = useState(false);
 
+  const [user, setUser] = useState({});
   useEffect(() => {
     // fetch user 
     const aud = fetchAud();
@@ -26,7 +27,7 @@ export default function SettingsScreen({ navigation, route }) {
     .catch(error => {
       showMessage({message: error.message, type: 'danger'});
     });
-  }, [passwordModalVisible, usernameModalVisible, phoneModalVisible]);
+  }, [userUpdated]);
 
   const handleLogout = () => {
     navigation.navigate("Login");
@@ -96,9 +97,9 @@ export default function SettingsScreen({ navigation, route }) {
             onPress={() => handleLogout()}
           />    
 
-          <UsernameModal user={user} usernameModalVisible={usernameModalVisible} setUsernameModalVisible={setUsernameModalVisible} />      
-          <PhoneModal user={user} phoneModalVisible={phoneModalVisible} setPhoneModalVisible={setPhoneModalVisible} />      
-          <PasswordModal user={user} passwordModalVisible={passwordModalVisible} setPasswordModalVisible={setPasswordModalVisible} />      
+          <UsernameModal user={user} userUpdated={userUpdated} setUserUpdated={setUserUpdated} usernameModalVisible={usernameModalVisible} setUsernameModalVisible={setUsernameModalVisible} />      
+          <PhoneModal user={user} userUpdated={userUpdated} setUserUpdated={setUserUpdated} phoneModalVisible={phoneModalVisible} setPhoneModalVisible={setPhoneModalVisible} />      
+          <PasswordModal user={user} userUpdated={userUpdated} setUserUpdated={setUserUpdated} passwordModalVisible={passwordModalVisible} setPasswordModalVisible={setPasswordModalVisible} />      
         </VStack>
       </View>
     </>

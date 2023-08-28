@@ -44,9 +44,10 @@ function FormInput(props) {
       validationSchema={UserSchema}
       onSubmit={(values) => {
         props.setEditUserModalVisible(false);
-        // Edit conductor
+        // edit user
         Api.patch(`/conductors/${user.id}`, values)
         .then(data => {
+          props.setUserUpdated(!props.userUpdated);
           showMessage({message: data.message, type: 'success'});
         })
         .catch(error => { 
