@@ -22,13 +22,9 @@ export default function WithdrawScreen({ navigation, route }) {
   withdrawAmount = accounting.formatNumber(withdrawAmount, {precision: 0});
 
   const [loaderVisible, setLoaderVisible] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
 
   const WithdrawSchema = Yup.object().shape({
-    otp_code: Yup.string()
-      .required('otp code required!')
-      .test('otp_code', 'invalid number', function(value){
-        return !isNaN(value);
-      }),
     password: Yup.string()
       .required('password required!'),  
   });
@@ -80,21 +76,14 @@ export default function WithdrawScreen({ navigation, route }) {
               <VStack spacing={15}>
                 <View style={{ flexDirection: "column", alignItems: "center" }}>
                   <TextInput
-                    label="OTP Code"
-                    variant="standard"
-                    style={{ minWidth: 150, fontSize: 20, marginBottom: 5 }}
-                    onChangeText={handleChange("otp_code")}
-                    onBlur={handleBlur("otp_code")}
-                    value={values.otp_code}
-                  />
-                  {errors.otp_code && touched.otp_code ? (<Text style={{ marginBottom: 5 }} variant="subtitle1" color="red">{errors.otp_code}</Text>) : null}
-                  <TextInput
-                    label="Password"
+                    label="Enter Password"
                     variant="standard"
                     style={{ minWidth: 150, fontSize: 20 }}
                     onChangeText={handleChange("password")}
                     onBlur={handleBlur("password")}
                     value={values.password}
+                    secureTextEntry={hidePassword}
+                    trailing={(props) => <Icon name="eye" onPress={() => setHidePassword(!hidePassword)} {...props} />}
                   />
                   {errors.password && touched.password ? (<Text variant="subtitle1" color="red">{errors.password}</Text>) : null}
                   <Button
@@ -116,7 +105,7 @@ export default function WithdrawScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   mainCardView: {
-    minHeight: 400,
+    minHeight: 350,
     backgroundColor: "white",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
