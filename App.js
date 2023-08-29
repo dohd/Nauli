@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FlashMessage from "react-native-flash-message";
-import { fetchAud } from "./api/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -17,13 +17,19 @@ import UsersScreen from "./screens/UsersScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [aud, setAud] = useState(null);
+  useEffect(() => {
+    AsyncStorage.getItem('aud', (error, result) => setAud(result));
+  }, []);
+
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={fetchAud()? 'Home' : 'Login'}>
+        <Stack.Navigator initialRouteName={aud? 'Home' : 'Login'}>
           <Stack.Screen 
             name="Login" 
             component={LoginScreen} 
+            initialParams={{setAud}}
             options={{ headerShown: false }}
           />
           <Stack.Screen 

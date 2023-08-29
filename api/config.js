@@ -1,24 +1,22 @@
 import axios from "axios";
-import SyncStorage from 'sync-storage';
 
-export const fetchAud = () => SyncStorage.get('aud');
+export const Auth = {
+    aud: '',
+    user: '',
+};
 
+export const fetchAud = () => 1;
 
 // In Development mode set reverse proxy for localhost access 
 //before starting local server i.e adb reverse tcp:8000 tcp:8000
 const Api = axios.create({
-    baseURL: 'http://localhost:8000/api',
+    // baseURL: 'http://localhost:8000/api',
+    // baseURL: 'https://7096-197-248-216-91.ngrok-free.app/api',
+    baseURL: 'http://nauli.airweb.co.ke/api',
     withCredentials: true,
     timeout: 15000,
     timeoutErrorMessage: 'timeout',
 });
-
-// Request interceptor
-Api.interceptors.request.use(config => {
-    const token = SyncStorage.get('accessToken');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-}, error => Promise.reject(error));
 
 // Response interceptor
 Api.interceptors.response.use(response => {

@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { Button, TextInput, VStack, Text, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import SyncStorage from 'sync-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
-import Api from "../api/config";
+import Api, {Auth} from "../api/config";
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
   const LoginSchema = Yup.object().shape({
     username: Yup.string()
@@ -30,9 +30,19 @@ export default function LoginScreen({ navigation }) {
           Api.post('/login', values)
           .then(data => {
             setLoaderVisible(false);
-            SyncStorage.set('accessToken', data.token);
-            SyncStorage.set('aud', data.aud);
-            navigation.navigate("Home");
+            if (data.aud && data.token) {
+              // persist audience
+              AsyncStorage.setItem('aud', `${data.aud}`);
+              Auth.aud = data.aud;
+              // Request interceptor
+              if (data.token) {
+                Api.interceptors.request.use(config => {
+                  config.headers.Authorization = `Bearer ${data.token}`;
+                  return config;
+                }, error => Promise.reject(error));
+              }
+              navigation.navigate("Home");
+            }
           })
           .catch(error => { 
             setLoaderVisible(false);

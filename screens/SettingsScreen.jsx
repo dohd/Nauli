@@ -3,8 +3,8 @@ import { View, StyleSheet } from "react-native";
 import { AppBar, ListItem, IconButton, VStack } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { showMessage } from "react-native-flash-message";
-import SyncStorage from "sync-storage";
-import Api, { fetchAud } from "../api/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Api, {Auth} from "../api/config";
 
 import { PasswordModal } from "./PasswordModal";
 import { PhoneModal } from './PhoneModal';
@@ -19,7 +19,7 @@ export default function SettingsScreen({ navigation, route }) {
   const [user, setUser] = useState({});
   useEffect(() => {
     // fetch user 
-    const aud = fetchAud();
+    const aud = Auth.aud;
     Api.get(`/users/${aud}`)
     .then(data => {
       setUser(data);
@@ -32,11 +32,12 @@ export default function SettingsScreen({ navigation, route }) {
   const handleLogout = () => {
     navigation.navigate("Login");
     navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-    SyncStorage.remove('aud');
+    AsyncStorage.removeItem('aud');
     // logout user
     Api.post(`/logout`)
     .then(data => {
-      SyncStorage.remove('accessToken');
+      // clear Bearer token header
+      delete Api.defaults.headers.common.Authorization;
       return data;
     })
     .catch(error => {

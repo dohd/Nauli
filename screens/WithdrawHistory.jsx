@@ -3,13 +3,13 @@ import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl } from "react-
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
-import Api, { fetchAud } from "../api/config";
+import Api, {Auth} from "../api/config";
 
 export default function WithdrawHistory({navigation, route}) {
   const [withdrawals, setWithdrawals] = useState([]);
   useEffect(() => {
     // fetch cashouts
-    const aud = fetchAud();
+    const aud = Auth.aud;
     Api.get(`/users/${aud}/cashouts`)
     .then(data => {
       setWithdrawals(data);
@@ -24,7 +24,7 @@ export default function WithdrawHistory({navigation, route}) {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     // fetch cashouts
-    const aud = fetchAud();
+    const aud = Auth.aud;
     Api.get(`/users/${aud}/cashouts`)
     .then(data => {
       setRefreshing(false);

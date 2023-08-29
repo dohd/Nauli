@@ -3,12 +3,12 @@ import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl } from "react-
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
-import Api, { fetchAud } from "../api/config";
+import Api, {Auth} from "../api/config";
 
 export default function FareHistory({navigation, route}) {
   const [deposits, setDeposits] = useState([]);
   useEffect(() => {
-    const aud = fetchAud();
+    const aud = Auth.aud;
     // fetch deposits
     Api.get(`/users/${aud}/deposits`)
     .then(data => {
@@ -24,7 +24,7 @@ export default function FareHistory({navigation, route}) {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     // fetch deposits
-    const aud = fetchAud();
+    const aud = Auth.aud;
     Api.get(`/users/${aud}/deposits`)
     .then(data => {
       setRefreshing(false);

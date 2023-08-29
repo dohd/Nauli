@@ -8,7 +8,7 @@ import {
 } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { showMessage } from "react-native-flash-message";
-import Api, { fetchAud } from "../api/config";
+import Api, {Auth} from "../api/config";
 
 import { AddUserModal } from "./AddUserModal";
 import { EditUserModal } from "./EditUserModal";
@@ -22,7 +22,7 @@ export default function UsersScreen({navigation, route}) {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     // fetch users
-    const aud = fetchAud();
+    const aud = Auth.aud;
     Api.get(`/users/${aud}/conductors`)
     .then(data => {
       setUsers(data);
@@ -36,7 +36,7 @@ export default function UsersScreen({navigation, route}) {
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    const aud = fetchAud();
+    const aud = Auth.aud;
     Api.get(`/users/${aud}/conductors`)
     .then(data => {
       setRefreshing(false);

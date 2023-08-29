@@ -3,9 +3,9 @@ import { StyleSheet, View } from "react-native";
 import { Button, TextInput, Text, VStack, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import SyncStorage from 'sync-storage';
 import { showMessage } from "react-native-flash-message";
-import Api from "../api/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Api, {Auth} from "../api/config";
 
 export default function SignUpScreen({ navigation }) {
   const [loaderVisible, setLoaderVisible] = useState(false);
@@ -38,10 +38,18 @@ export default function SignUpScreen({ navigation }) {
           Api.post('/register', values)
           .then(data => {
             setLoaderVisible(false);
-            SyncStorage.set('accessToken', data.token);
-            SyncStorage.set('aud', data.aud);
-            showMessage({message: 'Account created successfully', type: 'success'});
-            navigation.navigate("Home");
+            if (data.token && data.aud) {
+              AsyncStorage.setItem('aud', `${data.aud}`);
+              Auth.aud = data.aud;
+              // Request interceptor
+              Api.interceptors.request.use(config => {
+                  config.headers.Authorization = `Bearer ${data.token}`;
+                  return config;
+                }, error => Promise.reject(error));
+                
+              showMessage({message: 'Account created successfully', type: 'success'});
+              navigation.navigate("Home");
+            }
           })
           .catch(error => { 
             setLoaderVisible(false);
