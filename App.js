@@ -17,7 +17,7 @@ import UsersScreen from "./screens/UsersScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [aud, setAud] = useState(null);
+  const [aud, setAud] = useState('');
   useEffect(() => {
     AsyncStorage.getItem('aud', (error, result) => setAud(result));
   }, []);
@@ -29,7 +29,6 @@ export default function App() {
           <Stack.Screen 
             name="Login" 
             component={LoginScreen} 
-            initialParams={{setAud}}
             options={{ headerShown: false }}
           />
           <Stack.Screen 
