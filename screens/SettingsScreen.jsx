@@ -36,8 +36,7 @@ export default function SettingsScreen({ navigation, route }) {
     // logout user
     Api.post(`/logout`)
     .then(data => {
-      // clear Bearer token header
-      delete Api.defaults.headers.common.Authorization;
+      AsyncStorage.removeItem('token');
       return data;
     })
     .catch(error => {

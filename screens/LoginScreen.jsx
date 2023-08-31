@@ -33,14 +33,8 @@ export default function LoginScreen({ navigation, route }) {
             if (data.aud && data.token) {
               // persist audience
               AsyncStorage.setItem('aud', `${data.aud}`);
+              AsyncStorage.setItem('token', data.token);
               Auth.aud = data.aud;
-              // Request interceptor
-              if (data.token) {
-                Api.interceptors.request.use(config => {
-                  config.headers.Authorization = `Bearer ${data.token}`;
-                  return config;
-                }, error => Promise.reject(error));
-              }
               navigation.navigate("Home");
             }
           })
