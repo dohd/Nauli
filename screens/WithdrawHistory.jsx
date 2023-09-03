@@ -1,20 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl } from "react-native";
+import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
 import Api, {Auth} from "../api/config";
 
 export default function WithdrawHistory({navigation, route}) {
-  const [withdrawals, setWithdrawals] = useState([]);
+  const [withdrawalsData, setWithdrawalsData] = useState({loaded: false, withdrawals:[]});
   useEffect(() => {
     // fetch cashouts
     const aud = Auth.aud;
     Api.get(`/users/${aud}/cashouts`)
     .then(data => {
-      setWithdrawals(data);
+      setWithdrawalsData({loaded: true, withdrawals: data});
     })
     .catch(error => { 
+      setWithdrawalsData({loaded: true, withdrawals: []});
       showMessage({message: error.message, type: 'danger'});
     });
   }, []); 
@@ -28,7 +29,7 @@ export default function WithdrawHistory({navigation, route}) {
     Api.get(`/users/${aud}/cashouts`)
     .then(data => {
       setRefreshing(false);
-      setWithdrawals(data);
+      setWithdrawalsData({loaded: true, withdrawals: data});
     })
     .catch(error => { 
       setRefreshing(false);
@@ -38,19 +39,24 @@ export default function WithdrawHistory({navigation, route}) {
 
   return (
       <SafeAreaView style={{ marginTop: 5 }}>
-        <FlatList
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          data={
-            withdrawals.map(v => ({
-              id: v.id,
-              date: new Date(v.created_at).toLocaleDateString("es-CL"),
-              time: new Date(v.created_at).toLocaleTimeString(),
-              amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
-            }))
+        {
+          !withdrawalsData.loaded? <ActivityIndicator style={{marginTop: 20 }} size="large" /> :
+          (
+            <FlatList
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              data={
+                withdrawalsData.withdrawals.map(v => ({
+                  id: v.id,
+                  date: new Date(v.created_at).toLocaleDateString("es-CL"),
+                  time: new Date(v.created_at).toLocaleTimeString(),
+                  amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+                }))
+            }
+              renderItem={({item}) => <Transaction {...item} />}
+              keyExtractor={item => item.id}
+            />
+          )
         }
-          renderItem={({item}) => <Transaction {...item} />}
-          keyExtractor={item => item.id}
-        />
       </SafeAreaView>
   );
 }

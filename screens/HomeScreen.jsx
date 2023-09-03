@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList, RefreshControl } from "react-native";
+import { View, StyleSheet, SafeAreaView, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import {
   Backdrop,
   BackdropSubheader,
@@ -20,7 +20,7 @@ import { WithdrawModal } from "./WithdrawModal";
 export default function HomeScreen(props) {
   const [withdrawModalVisible, setWithdrawModalVisible] = useState(false);
   const [accountBalance, setAccountBalance] = useState(0);
-  const [deposits, setDeposits] = useState([]);
+  const [depositsData, setDepositsData] = useState({loaded: false, deposits: []});
   const [user, setUser] = useState({});
   props = {withdrawModalVisible, setWithdrawModalVisible, user, accountBalance, ...props};
 
@@ -46,9 +46,10 @@ export default function HomeScreen(props) {
     // fetch deposits
     Api.get(`/users/${aud}/deposits`)
     .then(data => {
-      setDeposits(data);
+      setDepositsData({loaded: true, deposits: data});
     })
     .catch(error => { 
+      setDepositsData({loaded: true, deposits: []});
       showMessage({message: error.message, type: 'danger'});
     });
   }, []);  
@@ -62,7 +63,7 @@ export default function HomeScreen(props) {
     Api.get(`/users/${aud}/deposits`)
     .then(data => {
       setRefreshing(false);
-      setDeposits(data);
+      setDepositsData({loaded: true, deposits: data});
     })
     .catch(error => { 
       setRefreshing(false);
@@ -102,20 +103,25 @@ export default function HomeScreen(props) {
 
         {/* Deposit list */}
         <SafeAreaView>
-          <FlatList
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            data={
-              deposits.map(v => ({
-                id: v.id,
-                name: `${v.first_name} ${v.middle_name}`,
-                phone: v.msisdn,
-                amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
-                time: new Date(v.created_at).toLocaleTimeString(),
-              }))
-            }
-            renderItem={({item}) => <FareDeposit {...item} />}
-            keyExtractor={item => item.id}
-          />  
+          {
+            (
+              !depositsData.loaded? <ActivityIndicator style={{marginTop: 20 }} size="large" /> :
+              <FlatList
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                data={
+                  depositsData.deposits.map(v => ({
+                    id: v.id,
+                    name: `${v.first_name} ${v.middle_name}`,
+                    phone: v.msisdn,
+                    amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+                    time: new Date(v.created_at).toLocaleTimeString(),
+                  }))
+                }
+                renderItem={({item}) => <FareDeposit {...item} />}
+                keyExtractor={item => item.id}
+              />  
+            )
+          }
           <Spacer />
         </SafeAreaView>
       </Backdrop>

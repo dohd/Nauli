@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, StyleSheet, SafeAreaView, FlatList, Pressable, RefreshControl} from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, SafeAreaView, FlatList, Pressable, ActivityIndicator} from "react-native";
 import {
   AppBar,
   IconButton,
@@ -19,34 +19,19 @@ export default function UsersScreen({navigation, route}) {
   const [user, setUser] = useState({});
   const [userUpdated, setUserUpdated] = useState(false);
 
-  const [users, setUsers] = useState([]);
+  const [usersData, setUsersData] = useState({loaded: false, users: []});
   useEffect(() => {
     // fetch users
     const aud = Auth.aud;
     Api.get(`/users/${aud}/conductors`)
     .then(data => {
-      setUsers(data);
+      setUsersData({ loaded: true,users: data });
     })
     .catch(error => { 
+      setUsersData({ loaded: true,  users: []});
       showMessage({message: error.message, type: 'danger'});
     });
-  }, [userUpdated]); 
-
-  // refresh control
-  const [refreshing, setRefreshing] = useState(false);
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    const aud = Auth.aud;
-    Api.get(`/users/${aud}/conductors`)
-    .then(data => {
-      setRefreshing(false);
-      setUsers(data);
-    })
-    .catch(error => { 
-      setRefreshing(false);
-      showMessage({message: error.message, type: 'danger'});
-    });
-  }, []);
+  }, [userUpdated]);   
 
   return (
     <>
@@ -62,27 +47,31 @@ export default function UsersScreen({navigation, route}) {
       /> 
       <View style={styles.mainCardView}>
         <SafeAreaView>
-          <FlatList
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            data={
-              users.map(v => ({
-                id: v.id,
-                name: v.name,
-                phone: v.phone,
-                active: v.active
-              }))
-            }
-            renderItem={({item}) => (
-              <User 
-                {...item}
-                user={user}
-                setUser={setUser}
-                editUserModalVisible={editUserModalVisible} 
-                setEditUserModalVisible={setEditUserModalVisible} 
-              />
-            )}
-            keyExtractor={item => item.id}
-          />
+        {
+          (
+            !usersData.loaded? <ActivityIndicator style={{marginTop: 20 }} size="large" /> :
+            <FlatList
+              data={
+                usersData.users.map(v => ({
+                  id: v.id,
+                  name: v.name,
+                  phone: v.phone,
+                  active: v.active
+                }))
+              }
+              renderItem={({item}) => (
+                <User 
+                  {...item}
+                  user={user}
+                  setUser={setUser}
+                  editUserModalVisible={editUserModalVisible} 
+                  setEditUserModalVisible={setEditUserModalVisible} 
+                />
+              )}
+              keyExtractor={item => item.id}
+            />
+          )
+        }
         </SafeAreaView>
       </View> 
 

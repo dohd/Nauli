@@ -1,20 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl } from "react-native";
+import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
 import Api, {Auth} from "../api/config";
 
 export default function FareHistory({navigation, route}) {
-  const [deposits, setDeposits] = useState([]);
+  const [depositsData, setDepositsData] = useState({loaded: false, deposits: []});
   useEffect(() => {
     const aud = Auth.aud;
     // fetch deposits
     Api.get(`/users/${aud}/deposits`)
     .then(data => {
-      setDeposits(data);
+      setDepositsData({loaded: true, deposits: data});
     })
     .catch(error => { 
+      setDepositsData({loaded: false, deposits: []});
       showMessage({message: error.message, type: 'danger'});
     });
   }, []); 
@@ -28,7 +29,7 @@ export default function FareHistory({navigation, route}) {
     Api.get(`/users/${aud}/deposits`)
     .then(data => {
       setRefreshing(false);
-      setDeposits(data);
+      setDepositsData({loaded: true, deposits: data});
     })
     .catch(error => { 
       setRefreshing(false);
@@ -38,20 +39,25 @@ export default function FareHistory({navigation, route}) {
 
   return (
       <SafeAreaView style={{ marginTop: 5 }}>
-        <FlatList
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-          data={
-            deposits.map(v => ({
-              id: v.id,
-              name: `${v.first_name} ${v.middle_name}`,
-              phone: v.msisdn,
-              amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
-              time: new Date(v.created_at).toLocaleTimeString(),
-            }))
+        {
+          !depositsData.loaded? <ActivityIndicator style={{marginTop: 20 }} size="large" /> :
+          (
+            <FlatList
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              data={
+                depositsData.deposits.map(v => ({
+                  id: v.id,
+                  name: `${v.first_name} ${v.middle_name}`,
+                  phone: v.msisdn,
+                  amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+                  time: new Date(v.created_at).toLocaleTimeString(),
+                }))
+            }
+              renderItem={({item}) => <Transaction {...item} />}
+              keyExtractor={item => item.id}
+            />
+          )
         }
-          renderItem={({item}) => <Transaction {...item} />}
-          keyExtractor={item => item.id}
-        />
       </SafeAreaView>
   );
 }
