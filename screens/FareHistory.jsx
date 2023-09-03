@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View, SafeAreaView, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { SearchBar } from '@rneui/themed';
 import accounting from "accounting-js";
 import Api, {Auth} from "../api/config";
 
@@ -37,14 +38,52 @@ export default function FareHistory({navigation, route}) {
     });
   }, []);
 
+  // search bar 
+  const [searchData, setSearchData] = useState({search: '', matchedDeposits: []});
+  useEffect(() => {
+    let matchedDeposits = [];
+    let search = searchData.search;
+    depositsData.deposits.forEach(v => {
+      const phone = v.msisdn;
+      const name = `${v.first_name} ${v.middle_name}`;
+      if (phone.includes(search) || name.includes(search)) {
+        matchedDeposits.push(v);
+      }
+    }); 
+    setSearchData((prevState) => ({...prevState, matchedDeposits}));
+  }, [searchData.search]);
+
   return (
+    <>
+      <View>
+        <SearchBar
+          placeholder="Type Here..."
+          onChangeText={(text) => setSearchData((prevState) => ({...prevState, search: text}))}
+          value={searchData.search}
+          lightTheme={true}
+          containerStyle={{ backgroundColor: 'whitesmoke', height: 50 }}
+          inputContainerStyle={{ height: 40}}
+          inputStyle={{ color: 'black' }}
+        />
+      </View>
+
       <SafeAreaView style={{ marginTop: 5 }}>
         {
-          !depositsData.loaded? <ActivityIndicator style={{marginTop: 20 }} size="large" /> :
+          !depositsData.loaded? 
+          <ActivityIndicator style={{marginTop: 20 }} size="large" /> :
           (
             <FlatList
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
               data={
+                searchData.search? 
+                searchData.matchedDeposits.map(v => ({
+                  id: v.id,
+                  name: `${v.first_name} ${v.middle_name}`,
+                  phone: v.msisdn,
+                  amount: accounting.formatNumber(v.trans_amount, {precision: 0}),
+                  time: new Date(v.created_at).toLocaleTimeString(),
+                }))
+                :
                 depositsData.deposits.map(v => ({
                   id: v.id,
                   name: `${v.first_name} ${v.middle_name}`,
@@ -59,6 +98,7 @@ export default function FareHistory({navigation, route}) {
           )
         }
       </SafeAreaView>
+    </>
   );
 }
 
