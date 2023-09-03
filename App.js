@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FlashMessage from "react-native-flash-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Auth} from "../api/config";
+import {Auth} from "./api/config";
 
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
