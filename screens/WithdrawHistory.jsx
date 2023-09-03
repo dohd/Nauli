@@ -4,6 +4,7 @@ import { Text } from "@react-native-material/core";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import accounting from "accounting-js";
 import Api, {Auth} from "../api/config";
+import { showMessage } from "react-native-flash-message";
 
 export default function WithdrawHistory({navigation, route}) {
   const [withdrawalsData, setWithdrawalsData] = useState({loaded: false, withdrawals:[]});

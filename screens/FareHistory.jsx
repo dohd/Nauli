@@ -5,6 +5,7 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { SearchBar } from '@rneui/themed';
 import accounting from "accounting-js";
 import Api, {Auth} from "../api/config";
+import { showMessage } from "react-native-flash-message";
 
 export default function FareHistory({navigation, route}) {
   const [depositsData, setDepositsData] = useState({loaded: false, deposits: []});
@@ -16,7 +17,7 @@ export default function FareHistory({navigation, route}) {
       setDepositsData({loaded: true, deposits: data});
     })
     .catch(error => { 
-      setDepositsData({loaded: false, deposits: []});
+      setDepositsData({loaded: true, deposits: []});
       showMessage({message: error.message, type: 'danger'});
     });
   }, []); 

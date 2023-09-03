@@ -25,7 +25,7 @@ export default function UsersScreen({navigation, route}) {
     const aud = Auth.aud;
     Api.get(`/users/${aud}/conductors`)
     .then(data => {
-      setUsersData({ loaded: true,users: data });
+      setUsersData({ loaded: true, users: data });
     })
     .catch(error => { 
       setUsersData({ loaded: true,  users: []});
