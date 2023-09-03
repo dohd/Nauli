@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FlashMessage from "react-native-flash-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {Auth} from "../api/config";
 
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -81,8 +82,9 @@ export default function App() {
 function AuthScreen({ navigation, route }) {
   useEffect(() => {
     AsyncStorage.getItem('aud', (error, result) => {
-      if (result) return navigation.navigate("Home");
-      return navigation.navigate("Login");
+      if (!result) return navigation.navigate("Login");
+      Auth.aud = result;
+      navigation.navigate("Home");
     });
   }, []);
   return;

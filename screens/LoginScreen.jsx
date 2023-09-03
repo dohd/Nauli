@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, VStack, Text, ActivityIndicator } from "@react-native-material/core";
 import { Formik } from "formik";
@@ -15,13 +15,6 @@ export default function LoginScreen({ navigation, route }) {
     password: Yup.string()
       .required('password required!'),
   });
-
-  // redirect to home page if prev login info exists
-  // useEffect(() => {
-  //   AsyncStorage.getItem('aud', (error, result) => {
-  //     if (result) navigation.navigate("Home");
-  //   });
-  // }, []);
 
   return (
     <View style={styles.container}>
