@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import FlashMessage from "react-native-flash-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
@@ -19,7 +20,12 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={'Login'}>
+        <Stack.Navigator initialRouteName={'AuthScreen'}>
+          <Stack.Screen 
+            name="AuthScreen" 
+            component={AuthScreen} 
+            options={{ headerShown: false }}
+          />
           <Stack.Screen 
             name="Login" 
             component={LoginScreen} 
@@ -70,4 +76,14 @@ export default function App() {
       <FlashMessage position="top" />
     </>
   );
+}
+
+function AuthScreen({ navigation, route }) {
+  useEffect(() => {
+    AsyncStorage.getItem('aud', (error, result) => {
+      if (result) return navigation.navigate("Home");
+      return navigation.navigate("Login");
+    });
+  }, []);
+  return;
 }

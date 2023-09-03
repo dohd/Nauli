@@ -17,11 +17,11 @@ export default function LoginScreen({ navigation, route }) {
   });
 
   // redirect to home page if prev login info exists
-  useEffect(() => {
-    AsyncStorage.getItem('aud', (error, result) => {
-      if (result) navigation.navigate("Home");
-    });
-  }, []);
+  // useEffect(() => {
+  //   AsyncStorage.getItem('aud', (error, result) => {
+  //     if (result) navigation.navigate("Home");
+  //   });
+  // }, []);
 
   return (
     <View style={styles.container}>
