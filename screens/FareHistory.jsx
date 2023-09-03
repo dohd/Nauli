@@ -44,8 +44,8 @@ export default function FareHistory({navigation, route}) {
     let matchedDeposits = [];
     let search = searchData.search;
     depositsData.deposits.forEach(v => {
-      const phone = v.msisdn;
-      const name = `${v.first_name} ${v.middle_name}`;
+      const phone = `${v.msisdn}`.toLowerCase();
+      const name = `${v.first_name} ${v.middle_name}`.toLowerCase();
       if (phone.includes(search) || name.includes(search)) {
         matchedDeposits.push(v);
       }
